@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  unsangu_com:
+    container_name: unsangu_com
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - 3939:3000
+    networks:
+      - obj_network
+
+networks:
+  obj_network:
+    external: true

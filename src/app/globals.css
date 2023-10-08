@@ -1,27 +1,91 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  10 {
+    background-position: -200% 0;
   }
 }
-
+.progress-bar {
+  height: 3px;
+  width: 100%;
+  background-color: rgb(185, 185, 185);
+  transition: background-color 0.3s;
+}
+.progress-bar.active {
+  background-color: rgb(0, 0, 0);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 55%,
+    rgb(255, 255, 255) 50%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+.progress-bar .scroll-percent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: rgb(131, 131, 131);
+}
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  margin: 0;
+  padding: 0;
+  background-color: theme("colors.slate.50");
+}
+pre.no-style {
+  padding: 0px;
+  margin: 0;
+}
+[data-href] {
+  cursor: pointer;
+}
+[data-href].active {
+  font-weight: bold;
+}
+body.hide #nav-bar {
+  position: relative;
+}
+
+body.hide #page-controller {
+  display: none;
+}
+#page-controller a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  opacity: 0.5;
+  border-radius: 200px;
+  padding: 0.75rem;
+  transition: 0.3s;
+}
+#page-controller a:not([data-disabled="true"]):hover {
+  background-color: rgba(248, 250, 252, 0.75);
+  opacity: 1;
+}
+#page-controller [data-disabled="true"] {
+  display: none;
+  cursor: default;
+}
+body[open-menu] {
+  overflow: hidden;
+}
+body[open-menu] #menu {
+  display: flex;
+  flex: 1;
+}
+
+body[open-menu] #nav-container {
+  min-height: 100vh;
+}
+a,
+button,
+input {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }

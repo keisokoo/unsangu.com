@@ -1,0 +1,31 @@
+#burger {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+#burger > svg {
+  width: 16px;
+  height: auto;
+}
+#burger rect {
+  transition: 0.5s;
+}
+#burger .topLine {
+  transform-origin: 2px 4px;
+}
+#burger .bottomLine {
+  transform-origin: 2px 20px;
+}
+[open-menu] #burger .middleLine {
+  width: 0px;
+  opacity: 0;
+}
+
+[open-menu] #burger .topLine {
+  width: 26.87006px;
+  transform: translate(2px, 0px) rotate(45deg);
+}
+
+[open-menu] #burger .bottomLine {
+  width: 26.87006px;
+  transform: translate(2px, 0px) rotate(-45deg);
+}

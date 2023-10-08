@@ -1,5 +1,14 @@
 import type { Config } from 'tailwindcss'
-
+const disabledCss = {
+  'code::before': false,
+  'code::after': false,
+  'blockquote p:first-of-type::before': false,
+  'blockquote p:last-of-type::after': false,
+  pre: false,
+  code: false,
+  'pre code': false
+}
+/** @type {import('tailwindcss').Config} */
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,13 +17,21 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      typography: {
+        DEFAULT: { css: disabledCss },
+        sm: { css: disabledCss },
+        lg: { css: disabledCss },
+        xl: { css: disabledCss },
+        '2xl': { css: disabledCss },
       },
+      fontFamily: {
+        noto: ['var(--font-noto)'],
+        roboto: ['var(--font-roboto)'],
+      }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography')
+  ],
 }
 export default config
