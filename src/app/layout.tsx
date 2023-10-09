@@ -25,6 +25,7 @@ export default function RootLayout({
         <RouteProgressBar />
         <TopNav />
         {children}
+        <div id="script"></div>
         <PageGlobalEvent />
       </body>
     </html>

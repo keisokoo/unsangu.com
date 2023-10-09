@@ -1,6 +1,7 @@
 import SvgLeftArrow from "@/app/icons/LeftArrow";
 import SvgRightArrow from "@/app/icons/RightArrow";
 import { PostType, ServiceDataType } from "@/services/types";
+import { dateFormat } from "@/utils/format";
 import Link from "next/link";
 import DetailsEvent from "./DetailsEvent";
 import MDXbody from "./MDXbody";
@@ -28,7 +29,8 @@ export default function PostDetailsPage({ item, categoryId }: Props) {
       <div>
         {item.currentPost && (
           <MDXbody
-            title={item.currentPost.attributes.title}
+            categories={item.currentPost.attributes.categories.data}
+            postTime={dateFormat(item.currentPost.attributes.updatedAt)}
             contents={item.currentPost.attributes.contents}
           />
         )}

@@ -16,8 +16,8 @@ export default async function PostInCategoryPage({ params }: Props) {
     params.categoryId && !isNaN(Number(params.categoryId))
       ? Number(params.categoryId)
       : null;
-  if (!postId && !categoryId) return <div>error</div>;
-  const res = await getPostByID(Number(params.postId), categoryId);
+  if (!postId || !categoryId) return <div>error</div>;
+  const res = await getPostByID(postId, categoryId);
   if (!res) return <div>loading...</div>;
   return <PostDetailsPage categoryId={categoryId} item={res} />;
 }

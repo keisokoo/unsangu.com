@@ -8,19 +8,14 @@ const fetchOptions = {
   },
   cache: 'no-cache' as RequestCache
 }
-export async function getRecentPost() {
-  try {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/posts?populate=*&pagination[pageSize]=1&sort[id]=desc', { ...fetchOptions })
-    return (await response.json() as ServiceCollectionResponse<PostType>).data?.[0]
-  } catch (error) {
-    console.error(error)
-  }
-}
+const sorting = `&sort[0]=id:desc`
+const pageSize = 2
+
 export async function getPostByID(id: number, category?: number | null) {
   try {
     const categoryFilter = category ? `&filters[$and][1][categories][id]=${category}` : ''
-    const prevQuery = `/posts/?filters[$and][0][id][$lt]=${id}&pagination[pageSize]=1&sort[id]=desc${categoryFilter}`
-    const nextQuery = `/posts/?filters[$and][0][id][$gt]=${id}&pagination[pageSize]=1&sort[id]=asc${categoryFilter}`
+    const prevQuery = `/posts/?filters[$and][0][id][$gt]=${id}&pagination[pageSize]=1&sort[0]=id:asc${categoryFilter}`
+    const nextQuery = `/posts/?filters[$and][0][id][$lt]=${id}&pagination[pageSize]=1&sort[0]=id:desc${categoryFilter}`
     const prevPost = await fetch(process.env.NEXT_PUBLIC_API_URL + prevQuery, fetchOptions)
     const currentPost = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts/${id}?populate=*${categoryFilter}`, fetchOptions)
     const nextPost = await fetch(process.env.NEXT_PUBLIC_API_URL + nextQuery, fetchOptions)
@@ -37,34 +32,10 @@ export async function getPostByID(id: number, category?: number | null) {
     console.error(error)
   }
 }
-export async function getPosts(page?: number) {
+export async function getPosts(page?: number, category?: number | null) {
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts?pagination[page]=${page}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
-      },
-      cache: 'no-cache'
-    })
-    return await response.json() as ServiceCollectionResponse<PostType>
-  } catch (error) {
-    console.error(error)
-  }
-}
-export async function getPostsByCategoryId(id: number, page?: number) {
-  try {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts?filters[categories][id]=${id}&populate=contents&pagination[page]=${page}`, {
-      cache: 'no-cache',
-    })
-    return await response.json() as ServiceCollectionResponse<PostType>
-  } catch (error) {
-    console.error(error)
-  }
-}
-export async function getPostWithoutRecentPost(id: number) {
-  try {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts?populate=*&filters[id][$lt]=${id}`, {
+    const categoryFilter = category ? `&filters[categories][id]=${category}` : ''
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=contents,thumbnail${categoryFilter}${sorting}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +50,7 @@ export async function getPostWithoutRecentPost(id: number) {
 }
 export async function getCategoryList() {
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/categories?populate[posts][count]=true', {
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/categories?populate[posts][count]=true${sorting}&pagination[pageSize]=999`, {
       cache: 'no-cache',
     })
     const data = await response.json() as ServiceCollectionResponse<CategoryListItem>
