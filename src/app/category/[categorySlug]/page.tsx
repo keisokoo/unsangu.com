@@ -2,7 +2,7 @@ import ListPage from "@/components/ListPage";
 
 interface Props {
   params: {
-    categoryId: string;
+    categorySlug: string;
   };
   searchParams: {
     page: string;
@@ -10,6 +10,6 @@ interface Props {
 }
 export default async function CategoryListPage({ ...props }: Props) {
   return (
-    <ListPage pageUrl={`/category/${props.params.categoryId}`} {...props} />
+    <ListPage pageUrl={`/category/${props.params.categorySlug}`} {...props} />
   );
 }

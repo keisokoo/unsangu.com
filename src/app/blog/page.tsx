@@ -2,7 +2,7 @@ import ListPage from "@/components/ListPage";
 
 interface Props {
   params: {
-    categoryId: string;
+    categorySlug: string;
   };
   searchParams: {
     page: string;

@@ -3,7 +3,7 @@ import { getPostByID } from "@/services/posts";
 
 interface Props {
   params: {
-    categoryId: string;
+    categorySlug: string;
     postId: string;
   };
 }
@@ -12,12 +12,9 @@ export default async function PostInCategoryPage({ params }: Props) {
     params.postId && !isNaN(Number(params.postId))
       ? Number(params.postId)
       : null;
-  const categoryId =
-    params.categoryId && !isNaN(Number(params.categoryId))
-      ? Number(params.categoryId)
-      : null;
-  if (!postId || !categoryId) return <div>error</div>;
-  const res = await getPostByID(postId, categoryId);
+  const categorySlug = params.categorySlug;
+  if (!postId || !categorySlug) return <div>error</div>;
+  const res = await getPostByID(postId, categorySlug);
   if (!res) return <div>loading...</div>;
-  return <PostDetailsPage categoryId={categoryId} item={res} />;
+  return <PostDetailsPage categorySlug={categorySlug} item={res} />;
 }

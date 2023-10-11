@@ -1,5 +1,6 @@
 
-import { CategoryListItem, PostType, ServiceCollectionResponse, ServiceResponse } from "./types"
+import { checkHasString } from "@/utils/valid"
+import { CategoryListItem, CategoryListReturnType, PostType, ServiceCollectionResponse, ServiceResponse } from "./types"
 const fetchOptions = {
   method: 'GET',
   headers: {
@@ -9,11 +10,13 @@ const fetchOptions = {
   cache: 'no-cache' as RequestCache
 }
 const sorting = `&sort[0]=id:desc`
-const pageSize = 2
+const pageSize = 4
 
-export async function getPostByID(id: number, category?: number | null) {
+const imagePopulate = (target: string) => `&populate[${target}][fields][0]=url&populate[${target}][fields][1]=width&populate[${target}][fields][2]=height&populate[${target}][fields][3]=hash`
+const getCategoryFilter = (category?: number | string | null) => category ? `&filters[categories][${typeof category === 'number' ? 'id' : checkHasString(category) ? 'slug' : 'id'}]=${category}` : ''
+export async function getPostByID(id: number, category?: number | string | null) {
   try {
-    const categoryFilter = category ? `&filters[$and][1][categories][id]=${category}` : ''
+    const categoryFilter = getCategoryFilter(category)
     const prevQuery = `/posts/?filters[$and][0][id][$gt]=${id}&pagination[pageSize]=1&sort[0]=id:asc${categoryFilter}`
     const nextQuery = `/posts/?filters[$and][0][id][$lt]=${id}&pagination[pageSize]=1&sort[0]=id:desc${categoryFilter}`
     const prevPost = await fetch(process.env.NEXT_PUBLIC_API_URL + prevQuery, fetchOptions)
@@ -32,10 +35,12 @@ export async function getPostByID(id: number, category?: number | null) {
     console.error(error)
   }
 }
-export async function getPosts(page?: number, category?: number | null) {
+export async function getPosts(page?: number, category?: number | string | null) {
   try {
-    const categoryFilter = category ? `&filters[categories][id]=${category}` : ''
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate=contents,thumbnail${categoryFilter}${sorting}`, {
+    const categoryFilter = getCategoryFilter(category)
+    const query = `/posts?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate[contents]=true&populate[categories]=true${categoryFilter}${sorting}${imagePopulate('thumbnail')}`
+    console.log('query', query)
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + query, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -48,19 +53,26 @@ export async function getPosts(page?: number, category?: number | null) {
     console.error(error)
   }
 }
-export async function getCategoryList() {
+export async function getCategoryList(): Promise<CategoryListReturnType[]> {
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/categories?populate[posts][count]=true${sorting}&pagination[pageSize]=999`, {
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/categories?populate[posts][count]=true${sorting}&pagination[pageSize]=999${imagePopulate('thumbnail')}`, {
       cache: 'no-cache',
     })
     const data = await response.json() as ServiceCollectionResponse<CategoryListItem>
-    if (!data?.data) return []
+    if (!data?.data) return [] as CategoryListReturnType[]
     return data.data.map(category => ({
       id: category.id,
       name: category.attributes.name,
-      count: category.attributes.posts.data.attributes.count
-    }))
+      count: category.attributes.posts.data.attributes.count,
+      thumbnail: {
+        url: category.attributes.thumbnail.data.attributes.url,
+        width: category.attributes.thumbnail.data.attributes.width,
+        height: category.attributes.thumbnail.data.attributes.height,
+      },
+      slug: category.attributes.slug,
+    })) as CategoryListReturnType[]
   } catch (error) {
     console.error(error)
+    return [] as CategoryListReturnType[]
   }
 }

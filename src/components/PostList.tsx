@@ -1,15 +1,14 @@
 import { getPosts } from "@/services/posts";
 import { dateFormat } from "@/utils/format";
-import { getFromServer } from "@/utils/getServerImage";
 import { getPages, getPagination } from "@/utils/pagination";
-import Image from "next/image";
 import Link from "next/link";
+import ListThumbnail from "./ListThumbnail";
 import MDXSummary from "./MDXSummary";
 import Pagination from "./Pagination";
 
 interface Props {
   params: {
-    categoryId: string;
+    categorySlug: string;
   };
   searchParams: {
     page: string;
@@ -23,48 +22,67 @@ export default async function PostList({
   ...props
 }: Props) {
   const currentPage = page ? Number(page) : 1;
-  const categoryId = params.categoryId ? Number(params.categoryId) : null;
-  const response = await getPosts(currentPage, categoryId);
+  const categorySlug = params.categorySlug;
+  const response = await getPosts(currentPage, categorySlug);
   if (!response) return <div>loading...</div>;
   const { meta, data } = response;
   const { pagination } = meta;
   const pages = getPages(pagination.total ?? 0, pagination.pageSize ?? 1);
   const pageList = getPagination(1, pages);
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-16 lg:flex-row lg:flex-wrap">
       {data.map((post) => {
-        const thumbnail = post.attributes.thumbnail?.data?.attributes ?? null;
+        const thumbnail = post.attributes.thumbnail;
+        const categories = pageUrl.includes("blog")
+          ? post.attributes.categories.data ?? []
+          : [];
         return (
-          <div key={post.id}>
-            <Link href={`${pageUrl}/${post.id}`}>
-              <div>
-                {thumbnail ? (
-                  <Image
-                    className="aspect-video h-auto w-full object-cover"
-                    src={getFromServer(thumbnail.url)}
-                    alt={thumbnail.alternativeText ?? ""}
-                    width={thumbnail.width}
-                    height={thumbnail.height}
-                    priority
-                  />
-                ) : (
-                  <Image
-                    className="aspect-video h-auto w-full object-cover"
-                    src={"/og.png"}
-                    alt={"none"}
-                    width={1280}
-                    height={720}
-                    priority
-                  />
+          <div
+            key={post.id}
+            className="w-full border-t border-slate-300 py-8 first-of-type:border-none first-of-type:py-0"
+          >
+            <Link
+              href={`${pageUrl}/${post.id}`}
+              className="flex flex-row gap-8"
+            >
+              <div className="flex flex-1 flex-col gap-2">
+                <div className="flex flex-row gap-4">
+                  <div className="w-[84px] lg:hidden">
+                    <ListThumbnail item={thumbnail} />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-2 lg:w-full">
+                    <div className="text-xl lg:text-2xl">
+                      {post.attributes.title}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-xs lg:text-sm">
+                        {dateFormat(post.attributes.updatedAt)}
+                      </div>
+                      {categories.map((category) => {
+                        return (
+                          <div key={category.id} className="chip">
+                            <button
+                              data-href={`/category/${
+                                category.attributes.slug ?? category.id
+                              }`}
+                            >
+                              {category.attributes.name}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+                {post.attributes.contents?.[0]?.details && (
+                  <div className="text-slate-600 lg:text-base">
+                    <MDXSummary text={post.attributes.contents[0].details} />
+                  </div>
                 )}
               </div>
-              <div>{post.attributes.title}</div>
-              <div>{dateFormat(post.attributes.updatedAt)}</div>
-              {post.attributes.contents?.[0]?.details && (
-                <div>
-                  <MDXSummary text={post.attributes.contents[0].details} />
-                </div>
-              )}
+              <div className="hidden w-1/5 shrink-0 lg:block">
+                <ListThumbnail item={thumbnail} />
+              </div>
             </Link>
           </div>
         );

@@ -1,5 +1,7 @@
 import SvgRightArrow from "@/app/icons/RightArrow";
 import { getCategoryList } from "@/services/posts";
+import { CategoryListReturnType } from "@/services/types";
+import { checkHasString } from "@/utils/valid";
 import clsx from "clsx";
 import Link from "next/link";
 import CategoryListEvent from "./CategoryListEvent";
@@ -7,20 +9,24 @@ import ScriptPortal from "./ScriptPortal";
 
 interface Props {
   params: {
-    categoryId: string;
+    categorySlug: string;
   };
   searchParams: {
     page: string;
   };
   pageUrl: string;
 }
+const checkCategory = (category: CategoryListReturnType, slugOrId: string) => {
+  return checkHasString(slugOrId)
+    ? slugOrId === category.slug
+    : slugOrId === String(category.id);
+};
 export default async function CategorySidebar({ ...props }: Props) {
   const categories = await getCategoryList();
   if (!categories) return <div>loading...</div>;
-  const currentCategory = props.params.categoryId
-    ? categories.find(
-        (category) => props.params.categoryId === String(category.id),
-      )
+  const categorySlug = props.params.categorySlug;
+  const currentCategory = categorySlug
+    ? categories.find((category) => checkCategory(category, categorySlug))
     : null;
   return (
     <div
@@ -53,14 +59,14 @@ export default async function CategorySidebar({ ...props }: Props) {
             All
           </Link>
           {categories?.map((category) => {
+            const slug = category.slug;
             return (
               <div key={category.id}>
                 <Link
-                  href={`/category/${category.id}`}
+                  href={`/category/${slug ? slug : category.id}`}
                   className={clsx(
                     {
-                      "font-bold":
-                        props.params.categoryId === String(category.id),
+                      "font-bold": checkCategory(category, categorySlug),
                     },
                     "text-sm capitalize",
                   )}

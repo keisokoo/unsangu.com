@@ -13,8 +13,8 @@ function stripMarkdownText(markdownText: string) {
     .processSync(markdownText)
     .toString();
   markdownText =
-    markdownText.length > 100
-      ? markdownText.slice(0, 100) + " ..."
+    markdownText.length > 200
+      ? markdownText.slice(0, 200) + " ..."
       : markdownText;
   return markdownText;
 }

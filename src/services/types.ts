@@ -70,6 +70,7 @@ export type CategoryType = {
   id: number
   attributes: {
     name: string
+    slug: string | null
   }
 }
 export type CategoryListItem = {
@@ -79,6 +80,19 @@ export type CategoryListItem = {
       attributes: { count: number }
     }
   }
+  thumbnail: ImageResponseType
+  slug: string | null
+}
+export type CategoryListReturnType = {
+  id: number,
+  name: string,
+  count: number,
+  thumbnail: {
+    url: string,
+    width: number
+    height: number
+  },
+  slug: string | null
 }
 export type ContentsType = {
   id: number
@@ -95,4 +109,5 @@ export type PostType = {
   createdAt: string
   updatedAt: string
   publishedAt: string
+  slug: string | null
 }

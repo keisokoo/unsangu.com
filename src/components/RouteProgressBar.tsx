@@ -6,6 +6,9 @@ function isIOS(): boolean {
   if (typeof window === "undefined") return false;
   return /iPad|iPhone|iPod/.test(navigator.userAgent);
 }
+function easeInExpo(x: number): number {
+  return x * x * x * x * x;
+}
 const ios = isIOS();
 export default function RouteProgressBar() {
   const pathname = usePathname();
@@ -32,6 +35,9 @@ export default function RouteProgressBar() {
       handleStart();
     };
     const scrollPercentEvent = (e: Event) => {
+      const pageController = document.querySelector(
+        "#page-controller",
+      ) as HTMLElement;
       const target = e.target as Document;
       let scrollPercent =
         (target.documentElement.scrollTop /
@@ -40,6 +46,10 @@ export default function RouteProgressBar() {
         100;
       const barDom = document.querySelector(".scroll-percent");
       if (ios && scrollPercent > 95) scrollPercent = 100;
+      if (pageController) {
+        if (scrollPercent > 95) scrollPercent = 100;
+        pageController.style.opacity = `${easeInExpo(scrollPercent / 100)}`;
+      }
       if (barDom) {
         barDom.setAttribute("style", `width: ${scrollPercent}%`);
       }
@@ -55,15 +65,7 @@ export default function RouteProgressBar() {
 
   return (
     <>
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 9999,
-        }}
-        className={clsx({ active: loading }, "progress-bar")}
-      >
+      <div className={clsx({ active: loading }, "progress-bar")}>
         {!loading && <div className="scroll-percent"></div>}
       </div>
     </>

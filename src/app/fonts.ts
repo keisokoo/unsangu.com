@@ -4,7 +4,7 @@ export const noto = Noto_Sans_KR({
   subsets: ["latin"],
   display: "block",
   preload: true,
-  weight: ["400", "700"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-noto",
 });
 export const roboto = Roboto({
