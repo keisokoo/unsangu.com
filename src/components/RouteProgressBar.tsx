@@ -35,9 +35,7 @@ export default function RouteProgressBar() {
       handleStart();
     };
     const scrollPercentEvent = (e: Event) => {
-      const pageController = document.querySelector(
-        "#page-controller",
-      ) as HTMLElement;
+      const pageControllers = document.querySelectorAll("#page-controller>div");
       const target = e.target as Document;
       let scrollPercent =
         (target.documentElement.scrollTop /
@@ -46,9 +44,19 @@ export default function RouteProgressBar() {
         100;
       const barDom = document.querySelector(".scroll-percent");
       if (ios && scrollPercent > 95) scrollPercent = 100;
-      if (pageController) {
+      if (pageControllers && pageControllers.length > 0) {
         if (scrollPercent > 95) scrollPercent = 100;
-        pageController.style.opacity = `${easeInExpo(scrollPercent / 100)}`;
+        if (scrollPercent <= 0) {
+          pageControllers.forEach((pageController) => {
+            (pageController as HTMLElement).style.opacity = `1`;
+          });
+        } else {
+          pageControllers.forEach((pageController) => {
+            (pageController as HTMLElement).style.opacity = `${easeInExpo(
+              scrollPercent / 100,
+            )}`;
+          });
+        }
       }
       if (barDom) {
         barDom.setAttribute("style", `width: ${scrollPercent}%`);

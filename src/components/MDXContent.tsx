@@ -11,7 +11,7 @@ interface Props {
   text: string;
 }
 
-export default async function MDContent({ text }: Props) {
+export default async function MDXContent({ text }: Props) {
   return (
     <>
       <MDXRemote

@@ -6,14 +6,14 @@ import "dayjs/locale/ko";
 import Image from "next/image";
 import Link from "next/link";
 import ContentNavigation from "./ContentNavigation";
-import MDContent from "./MDContent";
+import MDContent from "./MDXContent";
 
 dayjs.locale("ko");
 
 interface Props {
   currentPost: ServiceDataType<PostType>;
 }
-export default function MDXbody({ currentPost }: Props) {
+export default function MDXBody({ currentPost }: Props) {
   const categories = currentPost.attributes.categories.data ?? [];
   const postTime = dateFormat(currentPost.attributes.updatedAt);
   const contents = currentPost.attributes.contents;
@@ -21,7 +21,7 @@ export default function MDXbody({ currentPost }: Props) {
   const title = currentPost.attributes.title;
   return (
     <div className="flex w-full justify-between gap-4">
-      <div className="w-full lg:w-5/6">
+      <div className="w-full flex-1">
         {thumbnail?.data && (
           <div className="flex w-full items-center justify-center lg:pb-8">
             <Image
@@ -59,7 +59,9 @@ export default function MDXbody({ currentPost }: Props) {
                   id={"content-" + content.id}
                   className="min-h-[480px]"
                 >
-                  <h1 className="text-4xl font-medium">{content.subject}</h1>
+                  <h1 className="sticky top-[60px] w-full bg-slate-50 py-1 text-4xl font-medium">
+                    {content.subject}
+                  </h1>
                   <div className="mt-4 border-t border-slate-300 py-8">
                     <div className="prose prose-sm prose-slate w-full max-w-full md:prose-base lg:prose-lg">
                       <MDContent text={content.details} />
@@ -71,9 +73,11 @@ export default function MDXbody({ currentPost }: Props) {
           </div>
         </div>
       </div>
-      <div className="hidden w-1/6 lg:block">
-        <ContentNavigation contents={contents} />
-      </div>
+      {contents.length > 1 && (
+        <div className="hidden w-1/6 lg:block">
+          <ContentNavigation contents={contents} />
+        </div>
+      )}
     </div>
   );
 }

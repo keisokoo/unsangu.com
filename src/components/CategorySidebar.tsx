@@ -37,7 +37,9 @@ export default async function CategorySidebar({ ...props }: Props) {
         id="category-btn"
         className="flex cursor-pointer items-center justify-between px-2 py-3 text-xs lg:hidden"
       >
-        <div>{currentCategory ? currentCategory.name : "All"}</div>
+        <div className="font-bold capitalize underline underline-offset-2">
+          {currentCategory ? currentCategory.name : "All"}
+        </div>
         <div id="category-svg" className="flex items-center justify-center">
           <SvgRightArrow />
         </div>

@@ -27,7 +27,7 @@ export default function ListThumbnail({ item }: Props) {
             width={1}
             height={1}
           />
-          <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center text-xs font-bold text-slate-50 xl:text-sm">
+          <div className="absolute left-0 top-0 flex h-full w-full select-none items-center justify-center text-xs font-bold text-slate-50 xl:text-sm">
             NO IMAGE
           </div>
         </div>

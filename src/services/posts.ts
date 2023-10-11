@@ -1,6 +1,6 @@
 
-import { checkHasString } from "@/utils/valid"
-import { CategoryListItem, CategoryListReturnType, PostType, ServiceCollectionResponse, ServiceResponse } from "./types"
+import { checkHasString, checkOnlyNumber } from "@/utils/valid"
+import { CategoryListItem, CategoryListReturnType, PostType, RandomPostType, ServiceCollectionResponse, ServiceResponse } from "./types"
 const fetchOptions = {
   method: 'GET',
   headers: {
@@ -39,7 +39,6 @@ export async function getPosts(page?: number, category?: number | string | null)
   try {
     const categoryFilter = getCategoryFilter(category)
     const query = `/posts?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate[contents]=true&populate[categories]=true${categoryFilter}${sorting}${imagePopulate('thumbnail')}`
-    console.log('query', query)
     const response = await fetch(process.env.NEXT_PUBLIC_API_URL + query, {
       method: 'GET',
       headers: {
@@ -74,5 +73,27 @@ export async function getCategoryList(): Promise<CategoryListReturnType[]> {
   } catch (error) {
     console.error(error)
     return [] as CategoryListReturnType[]
+  }
+}
+export async function getRandomPost(config?: {
+  limit?: number | null
+  postId?: number | string | null
+  categorySlug?: string | null
+}) {
+  try {
+    const {
+      limit = 4,
+      postId = null,
+      categorySlug = null
+    } = config || {
+    }
+    const categoryId = categorySlug ? checkOnlyNumber(categorySlug) && !checkHasString(categorySlug) ? Number(categorySlug) : null : null
+    const query = `/post/random?limit=${limit}${postId ? '&postId=' + postId : ''}${categorySlug ? `&${categoryId ? 'categoryId' : 'categorySlug'}=` + categorySlug : ''}`
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + query, {
+      cache: 'no-cache',
+    })
+    return await response.json() as RandomPostType[]
+  } catch (error) {
+    console.error(error)
   }
 }

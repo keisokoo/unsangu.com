@@ -1,9 +1,11 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 export default function PageGlobalEvent() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { push } = router;
   useEffect(() => {
     document.body.removeAttribute("open-menu");
   }, [pathname]);
@@ -65,16 +67,44 @@ export default function PageGlobalEvent() {
     function scrollToTop() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+    function documentClickEvent(e: Event) {
+      CategoryButtonEvent(e);
+      ContentNavigationScrollEvent(e);
+    }
+    function ContentNavigationScrollEvent(e: Event) {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "DIV" && target.hasAttribute("data-href")) {
+        e.stopPropagation();
+        e.preventDefault();
+        const contentId = target.getAttribute("data-href") as string;
+        const content = document.querySelector(contentId);
+        if (!content) return;
+        const top = content.getBoundingClientRect().top;
+        window.scrollTo({ top: top + window.scrollY - 60, behavior: "smooth" });
+      }
+      return;
+    }
+    function CategoryButtonEvent(e: Event) {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "BUTTON" && target.hasAttribute("data-category")) {
+        e.stopPropagation();
+        e.preventDefault();
+        push(target.getAttribute("data-category") as string);
+      }
+      return;
+    }
+    document.addEventListener("click", documentClickEvent);
     topBtn?.addEventListener("click", scrollToTop);
     window.addEventListener("scroll", toggleTopButton);
-    toggleTopButton();
     burger?.addEventListener("click", toggleIcon);
+    toggleTopButton();
     return () => {
+      document.removeEventListener("click", documentClickEvent);
       burger?.removeEventListener("click", toggleIcon);
       topBtn?.removeEventListener("click", scrollToTop);
       window.removeEventListener("scroll", toggleTopButton);
       document.body.removeAttribute("open-menu");
     };
-  }, []);
+  }, [push]);
   return <></>;
 }

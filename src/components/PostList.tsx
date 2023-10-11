@@ -45,7 +45,7 @@ export default async function PostList({
               href={`${pageUrl}/${post.id}`}
               className="flex flex-row gap-8"
             >
-              <div className="flex flex-1 flex-col gap-2">
+              <div className="flex flex-1 flex-col gap-8">
                 <div className="flex flex-row gap-4">
                   <div className="w-[84px] lg:hidden">
                     <ListThumbnail item={thumbnail} />
@@ -60,15 +60,15 @@ export default async function PostList({
                       </div>
                       {categories.map((category) => {
                         return (
-                          <div key={category.id} className="chip">
-                            <button
-                              data-href={`/category/${
-                                category.attributes.slug ?? category.id
-                              }`}
-                            >
-                              {category.attributes.name}
-                            </button>
-                          </div>
+                          <button
+                            key={category.id}
+                            className="chip"
+                            data-category={`/category/${
+                              category.attributes.slug ?? category.id
+                            }`}
+                          >
+                            {category.attributes.name}
+                          </button>
                         );
                       })}
                     </div>
