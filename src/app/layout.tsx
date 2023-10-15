@@ -1,5 +1,5 @@
-import PageGlobalEvent from "@/components/PageGlobalEvent";
 import TopNav from "@/components/TopNav";
+import GlobalEvent from "@/events/GlobalEvent";
 import clsx from "clsx";
 import type { Metadata } from "next";
 import { noto, roboto } from "./fonts";
@@ -7,8 +7,24 @@ import "./globals.css";
 import SvgUpArrow from "./icons/UpArrow";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://acme.com"),
+  alternates: {
+    canonical: "/",
+  },
   title: "UNSANGU.COM",
   description: "HUMBLE DEVELOPER",
+  openGraph: {
+    title: "UNSANGU.COM",
+    description: "HUMBLE DEVELOPER",
+    images: [
+      {
+        url: "https://dev.obj.kr/og.png",
+        width: 1280,
+        height: 720,
+        alt: "UNSANGU.COM",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -30,7 +46,7 @@ export default function RootLayout({
           </div>
         </div>
         <div id="script"></div>
-        <PageGlobalEvent />
+        <GlobalEvent />
       </body>
     </html>
   );

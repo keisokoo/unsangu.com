@@ -1,35 +1,36 @@
 import SvgLeftArrow from "@/app/icons/LeftArrow";
 import SvgRightArrow from "@/app/icons/RightArrow";
 import { getRandomPost } from "@/services/posts";
-import { PostType, ServiceDataType, TargetProps } from "@/services/types";
+import { PostType, ServiceDataType } from "@/services/types";
 import { dateFormat } from "@/utils/format";
 import { getFromServer } from "@/utils/getServerImage";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import ContentBody from "./ContentBody";
-interface Props extends TargetProps {
+interface Props {
   item: {
     prevPost: ServiceDataType<PostType>;
     currentPost: ServiceDataType<PostType>;
     nextPost: ServiceDataType<PostType>;
   };
+  categorySlug?: string | null;
 }
-export default async function PostDetails({ item, params }: Props) {
-  const randomPost =
-    params.target !== "groups"
-      ? await getRandomPost({
-          postId: item.currentPost.id,
-          categorySlug: params.target === "categories" ? params.slug : null,
-        })
-      : [];
-  const slug = params.slug;
-  const pageUrl =
-    params.target === "blog"
-      ? `/posts/${params.target}`
-      : `/posts/${params.target}/${params.slug}`;
-  const prevHref = item.prevPost?.id ? `${pageUrl}/${item.prevPost.id}` : null;
-  const nextHref = item.nextPost?.id ? `${pageUrl}/${item.nextPost.id}` : null;
+export default async function PostDetailsPage({ item, categorySlug }: Props) {
+  const randomPost = await getRandomPost({
+    postId: item.currentPost.id,
+    categorySlug,
+  });
+  const prevHref = item.prevPost
+    ? categorySlug
+      ? `/category/${categorySlug}/${item.prevPost.id}`
+      : `/blog/${item.prevPost.id}`
+    : null;
+  const nextHref = item.nextPost
+    ? categorySlug
+      ? `/category/${categorySlug}/${item.nextPost.id}`
+      : `/blog/${item.nextPost.id}`
+    : null;
   if (!item.currentPost) return <div>not found.</div>;
   return (
     <div className="mx-auto my-0 max-w-[784px] px-4 2xl:px-0">
@@ -73,14 +74,18 @@ export default async function PostDetails({ item, params }: Props) {
       {randomPost && randomPost.length > 0 && (
         <div className="flex w-full flex-col gap-4 pb-12 pt-4">
           <h2 className="text-2xl font-bold">
-            {slug ? `${slug.toUpperCase()} 카테고리의 ` : ""}
+            {categorySlug ? `${categorySlug.toUpperCase()} 카테고리의 ` : ""}
             다른 글
           </h2>
           <div className="flex w-full flex-wrap gap-4">
             {randomPost.map((post) => {
               return (
                 <Link
-                  href={`${pageUrl}/${post.id}`}
+                  href={`${
+                    categorySlug
+                      ? `/category/${categorySlug}/${post.id}`
+                      : `/blog/${post.id}`
+                  }`}
                   key={post.id}
                   className="flex w-[calc(50%-1rem/2*1)] flex-col gap-1 lg:w-[calc(25%-1rem/4*3)]"
                 >

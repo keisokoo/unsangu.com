@@ -25,6 +25,7 @@ export default function RouteProgressBar() {
     setLoading(true);
   }, []);
   useEffect(() => {
+    let ticking = false;
     const start = (e: Event) => {
       const target = (e.target as HTMLAnchorElement).href
         ? (e.target as HTMLAnchorElement)
@@ -34,40 +35,35 @@ export default function RouteProgressBar() {
       if (target.href === window.location.href) return;
       handleStart();
     };
-    const scrollPercentEvent = (e: Event) => {
-      const pageControllers = document.querySelectorAll("#page-controller>div");
-      const target = e.target as Document;
+    const scrollPercentEvent = () => {
+      const contentTarget = document.querySelector("#content");
+      if (!contentTarget) return;
       let scrollPercent =
-        (target.documentElement.scrollTop /
-          (target.documentElement.scrollHeight -
-            target.documentElement.clientHeight)) *
+        (document.documentElement.scrollTop /
+          (contentTarget.clientHeight - window.innerHeight)) *
         100;
       const barDom = document.querySelector(".scroll-percent");
-      if (ios && scrollPercent > 95) scrollPercent = 100;
-      if (pageControllers && pageControllers.length > 0) {
-        if (scrollPercent > 95) scrollPercent = 100;
-        if (scrollPercent <= 0) {
-          pageControllers.forEach((pageController) => {
-            (pageController as HTMLElement).style.opacity = `1`;
-          });
-        } else {
-          pageControllers.forEach((pageController) => {
-            (pageController as HTMLElement).style.opacity = `${easeInExpo(
-              scrollPercent / 100,
-            )}`;
-          });
-        }
-      }
+      if (scrollPercent > 100) scrollPercent = 100;
       if (barDom) {
         barDom.setAttribute("style", `width: ${scrollPercent}%`);
       }
+      ticking = false;
+    };
+    const handleScrollPercent = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          scrollPercentEvent();
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     document.addEventListener("click", start);
-    document.addEventListener("scroll", scrollPercentEvent);
+    document.addEventListener("scroll", handleScrollPercent);
     setLoading(false);
     return () => {
       document.removeEventListener("click", start);
-      document.removeEventListener("scroll", scrollPercentEvent);
+      document.removeEventListener("scroll", handleScrollPercent);
     };
   }, [handleStart]);
 

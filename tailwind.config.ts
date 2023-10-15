@@ -1,4 +1,7 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
+type CSSProperties = {
+  [property: string]: string | number;
+};
 const disabledCss = {
   'code::before': false,
   'code::after': false,
