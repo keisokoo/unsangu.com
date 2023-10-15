@@ -1,5 +1,5 @@
-import PostsPage from "@/components/PostsPage";
-import SeriesPage from "@/components/SeriesPage";
+import PostsPage from "@/components/list/PostsPage";
+import SeriesPage from "@/components/list/SeriesPage";
 import { TargetProps } from "@/services/types";
 import { targetCheck } from "@/utils/valid";
 

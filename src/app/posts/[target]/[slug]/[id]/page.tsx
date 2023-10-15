@@ -1,8 +1,16 @@
-import PostDetails from "@/components/PostDetails";
+import PostDetails from "@/components/details/PostDetails";
 import { getPostByID } from "@/services/posts";
 import { TargetProps } from "@/services/types";
+import { getMetadata } from "@/utils/getMetadata";
 import { checkOnlyNumber } from "@/utils/valid";
+import { ResolvingMetadata } from "next";
 
+export async function generateMetadata(
+  { params }: TargetProps,
+  parent: ResolvingMetadata,
+) {
+  return getMetadata(params, parent);
+}
 export default async function PostByID(props: TargetProps) {
   const postId =
     props.params.id &&

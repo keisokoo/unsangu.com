@@ -1,30 +1,21 @@
 import SvgRightArrow from "@/app/icons/RightArrow";
 import { getCategoryList } from "@/services/posts";
-import { CategoryListReturnType } from "@/services/types";
+import { CategoryListReturnType, TargetProps } from "@/services/types";
 import { checkHasString } from "@/utils/valid";
 import clsx from "clsx";
 import Link from "next/link";
-import CategoryListEvent from "../events/CategoryListEvent";
-import ScriptPortal from "./ScriptPortal";
+import CategoryListEvent from "../../events/CategoryListEvent";
+import ScriptPortal from "../ScriptPortal";
 
-interface Props {
-  params: {
-    categorySlug: string;
-  };
-  searchParams: {
-    page: string;
-  };
-  pageUrl: string;
-}
 const checkCategory = (category: CategoryListReturnType, slugOrId: string) => {
   return checkHasString(slugOrId)
     ? slugOrId === category.slug
     : slugOrId === String(category.id);
 };
-export default async function CategorySidebar({ ...props }: Props) {
+export default async function Sidebar({ ...props }: TargetProps) {
   const categories = await getCategoryList();
   if (!categories) return <div>500 internal error.</div>;
-  const categorySlug = props.params.categorySlug;
+  const categorySlug = props.params.slug;
   const currentCategory = categorySlug
     ? categories.find((category) => checkCategory(category, categorySlug))
     : null;
@@ -50,7 +41,7 @@ export default async function CategorySidebar({ ...props }: Props) {
           className="absolute hidden flex-col gap-4 bg-slate-50 lg:relative lg:flex"
         >
           <Link
-            href={"/blog"}
+            href={"/posts/blog"}
             className={clsx(
               {
                 "font-bold": !currentCategory,
@@ -65,7 +56,7 @@ export default async function CategorySidebar({ ...props }: Props) {
             return (
               <div key={category.id}>
                 <Link
-                  href={`/category/${slug ? slug : category.id}`}
+                  href={`/posts/categories/${slug ? slug : category.id}`}
                   className={clsx(
                     {
                       "font-bold": checkCategory(category, categorySlug),

@@ -1,7 +1,6 @@
 
 import { checkHasString, checkOnlyNumber } from "@/utils/valid"
 import * as cheerio from 'cheerio'
-import { log } from "console"
 import { CategoryListItem, CategoryListReturnType, GroupListResponse, GroupResponse, PostType, RandomPostType, ServiceCollectionResponse, ServiceResponse } from "./types"
 
 const fetchOptions = {
@@ -52,7 +51,6 @@ export async function getPosts(page?: number, category?: number | string | null,
   try {
     const categoryFilter = getCategoryFilter(filterTitle, category)
     const query = process.env.NEXT_PUBLIC_API_URL + `/posts?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate[contents]=true&populate[categories]=true${categoryFilter}${sorting}${imagePopulate('thumbnail')}`
-    log('query', query)
     const response = await fetch(query, {
       method: 'GET',
       headers: {
@@ -114,7 +112,6 @@ export async function getRandomPost(config?: {
 export async function getPostSeriesList() {
   try {
     const query = process.env.NEXT_PUBLIC_API_URL + `/groups?populate[posts][count]=true${imagePopulate('thumbnail')}${sorting}&pagination[pageSize]=999`
-    log(query)
     const response = await fetch(query, {
       cache: 'no-cache',
     })
@@ -154,7 +151,7 @@ export async function getOgMeta(url: string) {
     }
 
   } catch (error) {
-    console.log('fail', error)
+    console.error(error)
   }
 
 }

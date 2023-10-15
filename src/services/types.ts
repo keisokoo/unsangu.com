@@ -182,12 +182,13 @@ export type GroupResponse = {
 }
 export const validTarget = ['blog', 'categories', 'groups'] as const
 export type ValidTargetType = typeof validTarget[number]
+export type TargetParams = {
+  target: ValidTargetType
+  slug: string;
+  id: string;
+}
 export interface TargetProps {
-  params: {
-    target: ValidTargetType
-    slug: string;
-    id: string;
-  };
+  params: TargetParams
   searchParams: {
     page: string;
   };

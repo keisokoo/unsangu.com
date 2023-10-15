@@ -1,40 +1,38 @@
 import { getCurrentPostById } from "@/services/posts";
+import { TargetParams } from "@/services/types";
 import { ResolvingMetadata } from "next";
 import { getFromServer } from "./getServerImage";
 
-interface Props {
-  params: {
-    postId: string;
-  };
-  pageUrl: string;
-}
 export async function getMetadata(
-  { params, pageUrl }: Props,
+  params: TargetParams,
   parent: ResolvingMetadata,) {
-  const res = await getCurrentPostById(Number(params.postId));
+  const res = await getCurrentPostById(params.target === 'blog' ? Number(params.slug ?? params.id) : Number(params.id));
   if (!res) return;
   const previousImages = (await parent).openGraph?.images || [];
   const previousDescription = (await parent).description ?? "";
+  const title = res.currentPost?.attributes?.title;
+  const description = res.currentPost?.attributes?.summary ?? previousDescription;
+  const thumbnail = res.currentPost?.attributes?.thumbnail?.data;
   return {
     metadataBase: new URL("https://acme.com"),
     alternates: {
-      canonical: `${pageUrl}/${Number(params.postId)}`,
+      canonical: params.target === 'blog' ? `/posts/${params.target}/${params.slug ?? params.id}` : `/posts/${params.target}/${params.slug}/${params.id}`,
     },
-    title: res.currentPost.attributes.title,
-    description: res.currentPost.attributes.summary ?? previousDescription,
+    title,
+    description,
     openGraph: {
-      title: res.currentPost.attributes.title,
-      description: res.currentPost.attributes.summary ?? previousDescription,
+      title,
+      description,
       images: [
-        res.currentPost.attributes.thumbnail
+        thumbnail
           ? {
             url: getFromServer(
-              res.currentPost.attributes.thumbnail.data.attributes.url,
+              thumbnail.attributes.url,
             ),
-            width: res.currentPost.attributes.thumbnail.data.attributes.width,
+            width: thumbnail.attributes.width ?? 1200,
             height:
-              res.currentPost.attributes.thumbnail.data.attributes.height,
-            alt: res.currentPost.attributes.title,
+              thumbnail.attributes.height ?? 630,
+            alt: title,
           }
           : null,
         ...previousImages,

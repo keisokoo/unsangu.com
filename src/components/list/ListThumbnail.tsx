@@ -19,7 +19,7 @@ export default function ListThumbnail({ item }: Props) {
           priority
         />
       ) : (
-        <div className="relative bg-slate-600">
+        <div className="relative hidden bg-slate-600">
           <Image
             className="aspect-square h-auto w-full object-cover opacity-0"
             src={"/rect.png"}
