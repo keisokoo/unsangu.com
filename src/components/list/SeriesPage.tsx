@@ -9,7 +9,7 @@ export default async function SeriesPage({
   searchParams: { page },
 }: TargetProps) {
   const currentPage = page ? Number(page) : 1;
-  const response = await getPostSeriesList();
+  const response = await getPostSeriesList(currentPage);
   if (!response) return <div>500 internal error.</div>;
 
   const { pagination } = response.meta;
