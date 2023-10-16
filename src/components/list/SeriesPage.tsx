@@ -1,13 +1,20 @@
 import { getPostSeriesList } from "@/services/posts";
 import { TargetProps } from "@/services/types";
-import { dateFormat } from "@/utils/format";
-import { getFromServer } from "@/utils/getServerImage";
-import Image from "next/image";
+import { getPages, getPagination } from "@/utils/pagination";
 import Link from "next/link";
+import GroupListHeader from "./GroupListHeader";
+import Pagination from "./Pagination";
 
-export default async function SeriesPage(props: TargetProps) {
+export default async function SeriesPage({
+  searchParams: { page },
+}: TargetProps) {
+  const currentPage = page ? Number(page) : 1;
   const response = await getPostSeriesList();
   if (!response) return <div>500 internal error.</div>;
+
+  const { pagination } = response.meta;
+  const pages = getPages(pagination.total ?? 0, pagination.pageSize ?? 1);
+  const pageList = getPagination(1, pages);
   return (
     <div className="mx-auto my-0 w-full max-w-[784px] bg-slate-50 px-4 2xl:px-0">
       {response.data.map((item) => {
@@ -17,27 +24,15 @@ export default async function SeriesPage(props: TargetProps) {
             key={item.id}
             className="flex flex-col gap-1 rounded-md border border-slate-400 p-2"
           >
-            {item.attributes.thumbnail.data && (
-              <Image
-                src={getFromServer(
-                  item.attributes.thumbnail.data.attributes.url,
-                )}
-                width={item.attributes.thumbnail.data.attributes.width}
-                height={item.attributes.thumbnail.data.attributes.height}
-                alt={item.attributes.title}
-              />
-            )}
-            <h1 className="text-2xl">{item.attributes.title}</h1>
-            {item.attributes.description && (
-              <div className="text-sm">{item.attributes.description}</div>
-            )}
-            <div className="text-sm">
-              {dateFormat(item.attributes.updatedAt)}
-            </div>
-            <div>{item.attributes.posts.data.attributes.count}개의 포스트</div>
+            <GroupListHeader groupData={item.attributes} />
           </Link>
         );
       })}
+      <Pagination
+        pageList={pageList}
+        currentPage={currentPage}
+        pageUrl={`/posts/groups`}
+      />
     </div>
   );
 }

@@ -6,15 +6,15 @@ import RouteProgressBar from "./RouteProgressBar";
 const navList = [
   {
     name: "Blog",
-    path: "/posts/blog",
+    path: "/posts",
   },
   {
     name: "Series",
     path: "/posts/groups",
   },
   {
-    name: "Contact",
-    path: "/contact",
+    name: "Apps",
+    path: "/apps",
   },
 ];
 export default function TopNav() {

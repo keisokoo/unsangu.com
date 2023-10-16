@@ -1,17 +1,22 @@
 import { ImageResponseType } from "@/services/types";
 import { getFromServer } from "@/utils/getServerImage";
+import clsx from "clsx";
 import Image from "next/image";
 
 interface Props {
   item: ImageResponseType;
+  mobile?: boolean;
 }
-export default function ListThumbnail({ item }: Props) {
+export default function ListThumbnail({ item, mobile }: Props) {
   const thumbnail = item?.data?.attributes ?? null;
   return (
     <>
       {thumbnail ? (
         <Image
-          className="aspect-square h-auto w-full object-cover"
+          className={clsx(
+            { "w-[84px]": mobile, "w-full": !mobile },
+            "aspect-square h-auto object-cover",
+          )}
           src={getFromServer(thumbnail.url) + `?${thumbnail.hash}`}
           alt={thumbnail.alternativeText ?? ""}
           width={thumbnail.width}

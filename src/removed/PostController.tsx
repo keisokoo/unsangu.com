@@ -15,13 +15,13 @@ export default function PostController({
 }: Props) {
   const prevHref = prevPost
     ? categorySlug
-      ? `/category/${categorySlug}/${prevPost.id}`
-      : `/blog/${prevPost.id}`
+      ? `/posts/categories/${categorySlug}/${prevPost.id}`
+      : `/posts/${prevPost.id}`
     : null;
   const nextHref = nextPost
     ? categorySlug
-      ? `/category/${categorySlug}/${nextPost.id}`
-      : `/blog/${nextPost.id}`
+      ? `/posts/categories/${categorySlug}/${nextPost.id}`
+      : `/posts/${nextPost.id}`
     : null;
   return (
     <div id="post-controller">

@@ -1,7 +1,8 @@
 
 import { checkHasString, checkOnlyNumber } from "@/utils/valid"
 import * as cheerio from 'cheerio'
-import { CategoryListItem, CategoryListReturnType, GroupListResponse, GroupResponse, PostType, RandomPostType, ServiceCollectionResponse, ServiceResponse } from "./types"
+import { log } from "console"
+import { CategoryListItem, CategoryListReturnType, GroupListResponse, GroupResponse, PostType, ProfileType, RandomPostType, ServiceCollectionResponse, ServiceResponse } from "./types"
 
 const fetchOptions = {
   method: 'GET',
@@ -50,7 +51,7 @@ export async function getCurrentPostById(id: number) {
 export async function getPosts(page?: number, category?: number | string | null, filterTitle: string = 'categories') {
   try {
     const categoryFilter = getCategoryFilter(filterTitle, category)
-    const query = process.env.NEXT_PUBLIC_API_URL + `/posts?pagination[page]=${page}&pagination[pageSize]=${pageSize}&populate[contents]=true&populate[categories]=true${categoryFilter}${sorting}${imagePopulate('thumbnail')}`
+    const query = process.env.NEXT_PUBLIC_API_URL + `/posts?pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize}&populate[contents]=true&populate[categories]=true${categoryFilter}${sorting}${imagePopulate('thumbnail')}`
     const response = await fetch(query, {
       method: 'GET',
       headers: {
@@ -64,6 +65,24 @@ export async function getPosts(page?: number, category?: number | string | null,
     console.error(error)
   }
 }
+
+export async function getRecentPosts() {
+  try {
+    const query = process.env.NEXT_PUBLIC_API_URL + `/posts?pagination[page]=1&pagination[pageSize]=4&populate[contents]=true&populate[categories]=true${sorting}${imagePopulate('thumbnail')}`
+    const response = await fetch(query, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
+      },
+      cache: 'no-cache'
+    })
+    return await response.json() as ServiceCollectionResponse<PostType>
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export async function getCategoryList(): Promise<CategoryListReturnType[]> {
   try {
     const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/categories?populate[posts][count]=true${sorting}&pagination[pageSize]=999${imagePopulate('thumbnail')}`, {
@@ -109,9 +128,9 @@ export async function getRandomPost(config?: {
     console.error(error)
   }
 }
-export async function getPostSeriesList() {
+export async function getRecentSeriesList() {
   try {
-    const query = process.env.NEXT_PUBLIC_API_URL + `/groups?populate[posts][count]=true${imagePopulate('thumbnail')}${sorting}&pagination[pageSize]=999`
+    const query = process.env.NEXT_PUBLIC_API_URL + `/groups?populate[posts][count]=true${imagePopulate('thumbnail')}${sorting}&pagination[pageSize]=2`
     const response = await fetch(query, {
       cache: 'no-cache',
     })
@@ -120,9 +139,33 @@ export async function getPostSeriesList() {
     console.error(error)
   }
 }
+export async function getPostSeriesList(page?: number | string | null) {
+  try {
+    const currentPage = page ? Number(page) : 1
+    const query = process.env.NEXT_PUBLIC_API_URL + `/groups?pagination[page]=${currentPage}&populate[posts][count]=true${imagePopulate('thumbnail')}${sorting}&pagination[pageSize]=999`
+    const response = await fetch(query, {
+      cache: 'no-cache',
+    })
+    return await response.json() as ServiceCollectionResponse<GroupListResponse>
+  } catch (error) {
+    console.error(error)
+  }
+}
+export async function getPostSeriesCount(slug: string) {
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/groups/${slug}?populate[posts][count]=true${imagePopulate('thumbnail')}`, {
+      cache: 'no-cache',
+    })
+    return await response.json() as ServiceResponse<GroupListResponse>
+  } catch (error) {
+    console.error(error)
+  }
+}
 export async function getPostSeries(slug: string) {
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/groups/${slug}?populate=posts${imagePopulate('thumbnail')}`, {
+    const query = process.env.NEXT_PUBLIC_API_URL + `/groups/${slug}?populate[posts][populate][contents]=true&populate[posts][populate][thumbnail][fields][1]=url&populate[posts][populate][thumbnail][fields][2]=width&populate[posts][populate][thumbnail][fields][3]=height`
+    log(query)
+    const response = await fetch(query, {
       cache: 'no-cache',
     })
     return await response.json() as ServiceResponse<GroupResponse>
@@ -154,4 +197,34 @@ export async function getOgMeta(url: string) {
     console.error(error)
   }
 
+}
+
+export async function getProfile() {
+  try {
+    const query = process.env.NEXT_PUBLIC_API_URL + `/profile?populate[photo][fields][0]=url&populate[photo][fields][1]=width&populate[photo][fields][2]=height`
+    const response = await fetch(query, {
+      cache: 'no-cache',
+    })
+    return await response.json() as ServiceResponse<ProfileType>
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function getApps() {
+  try {
+    const query = process.env.NEXT_PUBLIC_API_URL + `/app?populate[box]=true`
+    const response = await fetch(query, {
+      cache: 'no-cache',
+    })
+    return await response.json() as ServiceResponse<{
+      box: {
+        id: number
+        title: string
+        contents: string
+      }[]
+    }>
+  } catch (error) {
+    console.error(error)
+  }
 }

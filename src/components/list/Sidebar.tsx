@@ -41,7 +41,7 @@ export default async function Sidebar({ ...props }: TargetProps) {
           className="absolute hidden flex-col gap-4 bg-slate-50 lg:relative lg:flex"
         >
           <Link
-            href={"/posts/blog"}
+            href={"/posts"}
             className={clsx(
               {
                 "font-bold": !currentCategory,

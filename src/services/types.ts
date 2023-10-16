@@ -180,7 +180,7 @@ export type GroupResponse = {
     data: ServiceDataType<PostType>[]
   }
 }
-export const validTarget = ['blog', 'categories', 'groups'] as const
+export const validTarget = ['categories', 'groups'] as const
 export type ValidTargetType = typeof validTarget[number]
 export type TargetParams = {
   target: ValidTargetType
@@ -192,4 +192,24 @@ export interface TargetProps {
   searchParams: {
     page: string;
   };
+}
+
+export interface ProfileType {
+  "name": string
+  "specialty": string
+  "email": string
+  "description": string
+  "createdAt": string
+  "updatedAt": string
+  "publishedAt": string
+  "photo": {
+    "data": {
+      "id": number,
+      "attributes": {
+        "url": string
+        "width": number
+        "height": number
+      }
+    }
+  }
 }

@@ -2,11 +2,13 @@ import { getCurrentPostById } from "@/services/posts";
 import { TargetParams } from "@/services/types";
 import { ResolvingMetadata } from "next";
 import { getFromServer } from "./getServerImage";
+import { checkOnlyNumber } from "./valid";
 
 export async function getMetadata(
   params: TargetParams,
   parent: ResolvingMetadata,) {
-  const res = await getCurrentPostById(params.target === 'blog' ? Number(params.slug ?? params.id) : Number(params.id));
+  const postId = checkOnlyNumber(params.target) ? Number(params.target) : Number(params.id);
+  const res = await getCurrentPostById(postId);
   if (!res) return;
   const previousImages = (await parent).openGraph?.images || [];
   const previousDescription = (await parent).description ?? "";
@@ -16,7 +18,7 @@ export async function getMetadata(
   return {
     metadataBase: new URL("https://acme.com"),
     alternates: {
-      canonical: params.target === 'blog' ? `/posts/${params.target}/${params.slug ?? params.id}` : `/posts/${params.target}/${params.slug}/${params.id}`,
+      canonical: checkOnlyNumber(params.target) ? `/posts/${postId}` : `/posts/${params.target}/${params.slug}/${params.id}`,
     },
     title,
     description,
