@@ -35,7 +35,7 @@ export default function ContentBody({ currentPost }: Props) {
             </div>
           )}
           <div className="flex flex-col gap-4 pt-8 lg:pt-0">
-            <h1 className="text-5xl font-semibold">{title}</h1>
+            <div className="text-3xl font-semibold">{title}</div>
             <div className="flex items-center gap-2">
               <div className="text-xs lg:text-sm">{postTime}</div>
               {categories.map((category) => {
@@ -63,13 +63,13 @@ export default function ContentBody({ currentPost }: Props) {
                     id={"content-" + content.id}
                     className="min-h-[480px]"
                   >
-                    <h1
+                    <div
                       data-sticky-header={false}
                       data-href={"#content-" + content.id}
                       className="sticky top-[60px] w-full bg-slate-50 py-1 text-xl font-medium"
                     >
                       {content.subject}
-                    </h1>
+                    </div>
                     <div className="mt-4 border-t border-slate-300 py-8">
                       <div className="prose prose-sm prose-slate w-full max-w-full md:prose-base lg:prose-lg">
                         <MDXContent text={content.details} />

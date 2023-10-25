@@ -41,7 +41,7 @@ export default async function PostDetails({
       {params.target === "groups" && (
         <GroupBox params={params} searchParams={searchParams} />
       )}
-      <article className="mx-auto my-0 max-w-[784px] px-4 2xl:px-0">
+      <article className={"page-default"}>
         {item.currentPost && <ContentBody currentPost={item.currentPost} />}
         <div className="flex w-full items-center justify-center gap-4 py-20">
           <Link

@@ -27,7 +27,7 @@ export default function TopNav() {
       >
         <div
           id="nav-container"
-          className="mx-auto my-0 box-border flex w-full max-w-[784px] flex-col items-center justify-between px-0 sm:flex-row sm:gap-4"
+          className={`page-width mx-auto my-0 box-border flex w-full flex-col items-center justify-between px-0 sm:flex-row sm:gap-4`}
         >
           <div className="flex h-[57px] w-full items-center gap-4 px-4 sm:justify-start sm:pr-0 2xl:p-0">
             <SvgHamburger className="sm:hidden" />

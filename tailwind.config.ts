@@ -1,7 +1,6 @@
 import type { Config } from 'tailwindcss';
-type CSSProperties = {
-  [property: string]: string | number;
-};
+import plugin from 'tailwindcss/plugin';
+
 const disabledCss = {
   'code::before': false,
   'code::after': false,
@@ -19,6 +18,9 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    pageSize: {
+      1: '1'
+    },
     extend: {
       typography: {
         DEFAULT: { css: disabledCss },
@@ -34,7 +36,19 @@ const config: Config = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography')
+    require('@tailwindcss/typography'),
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          page: (value) => ({
+            maxWidth: value,
+            width: '100%',
+            margin: '0 auto',
+          }),
+        },
+        { values: theme('pageSize') }
+      )
+    })
   ],
 }
 export default config

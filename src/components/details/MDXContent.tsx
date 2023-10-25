@@ -26,7 +26,6 @@ import { SiC, SiCsharp, SiYaml } from "react-icons/si";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/prism";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import rehypeSlug from "rehype-slug";
-import remarkGfm from "remark-gfm";
 const codeIcons: {
   [key: string]: JSX.Element;
 } = {
@@ -51,9 +50,36 @@ const codeIcons: {
   go: <BiLogoGoLang />,
 };
 function getIcon(language?: string) {
+  language = getCurrentLanguage(language);
   return language && codeIcons[language]
     ? codeIcons[language]
     : codeIcons.default;
+}
+function getCurrentLanguage(language?: string) {
+  let currentLanguage = language ?? "";
+  if (/\.(ts|tsx)$/.test(currentLanguage)) currentLanguage = "typescript";
+  if (/\.(js|jsx)$/.test(currentLanguage)) currentLanguage = "javascript";
+  if (/\.(py)$/.test(currentLanguage)) currentLanguage = "python";
+  if (/\.(cs)$/.test(currentLanguage)) currentLanguage = "csharp";
+  if (/\.(go)$/.test(currentLanguage)) currentLanguage = "go";
+  if (/\.(sh)$/.test(currentLanguage)) currentLanguage = "shell";
+  if (/\.(ps1)$/.test(currentLanguage)) currentLanguage = "powershell";
+  if (/\.(json)$/.test(currentLanguage)) currentLanguage = "json";
+  if (/\.(yml|yaml)$/.test(currentLanguage)) currentLanguage = "yaml";
+  if (/\.(sql)$/.test(currentLanguage)) currentLanguage = "sql";
+  if (/\.(html)$/.test(currentLanguage)) currentLanguage = "html";
+  if (/\.(css)$/.test(currentLanguage)) currentLanguage = "css";
+  if (/\.(scss)$/.test(currentLanguage)) currentLanguage = "css";
+  if (/\.(cpp|c)$/.test(currentLanguage)) currentLanguage = "cpp";
+  if (/\.(java)$/.test(currentLanguage)) currentLanguage = "java";
+  if (/\.(dockerfile)$/.test(currentLanguage)) currentLanguage = "dockerfile";
+  if (/\.(md)$/.test(currentLanguage)) currentLanguage = "markdown";
+  if (/\.(rb)$/.test(currentLanguage)) currentLanguage = "ruby";
+  if (/\.(rs)$/.test(currentLanguage)) currentLanguage = "rust";
+  if (/\.(swift)$/.test(currentLanguage)) currentLanguage = "swift";
+  if (currentLanguage.startsWith(".") && currentLanguage.endsWith("rc"))
+    currentLanguage = "json";
+  return currentLanguage;
 }
 export const getHost = async () => {
   const host = headers().get("host");
@@ -73,7 +99,7 @@ export default async function MDXContent({ text, currentUrl }: Props) {
         source={text}
         options={{
           mdxOptions: {
-            remarkPlugins: [remarkGfm],
+            remarkPlugins: [],
             rehypePlugins: [
               [
                 rehypeSlug,
@@ -92,6 +118,7 @@ export default async function MDXContent({ text, currentUrl }: Props) {
               props?.children as ReactElement
             )?.props?.className?.replace("language-", "");
             const Icon = getIcon(language!);
+            if (!language) return <pre {...props} />;
             return (
               <div
                 data-code=""
@@ -114,11 +141,13 @@ export default async function MDXContent({ text, currentUrl }: Props) {
             );
           },
           code: (props) => {
+            const currentLanguage = getCurrentLanguage(
+              props.className?.replace("language-", ""),
+            );
+            if (!currentLanguage) return <code {...props} />;
             return (
               <SyntaxHighlighter
-                language={
-                  props.className?.replace("language-", "") ?? "typescript"
-                }
+                language={currentLanguage}
                 showLineNumbers={true}
                 style={vscDarkPlus}
                 lineNumberStyle={{
@@ -184,23 +213,38 @@ export default async function MDXContent({ text, currentUrl }: Props) {
               // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
               return <img {...props} />;
             const substrings = props.alt?.split("{");
-            const alt = substrings?.[0].trim();
-            const width =
-              substrings?.[1] && substrings?.[1].match(/\d+/g)?.[0]
-                ? substrings[1].match(/\d+/g)![0]
-                : 1280;
-            const height =
-              substrings?.[1] && substrings?.[1].match(/\d+/g)?.[1]
-                ? substrings[1].match(/\d+/g)![1]
-                : 720;
+            if (substrings) {
+              const alt = substrings?.[0].trim().replace(/,$/g, "");
+              const width =
+                substrings?.[1] && substrings?.[1].match(/\d+/g)?.[0]
+                  ? substrings[1].match(/\d+/g)![0]
+                  : 1280;
+              const height =
+                substrings?.[1] && substrings?.[1].match(/\d+/g)?.[1]
+                  ? substrings[1].match(/\d+/g)![1]
+                  : 720;
+              return (
+                <>
+                  <span className="text-sm text-gray-400">{alt}</span>
+                  <Image
+                    src={props.src!}
+                    alt={alt ?? "blog image"}
+                    width={Number(width)}
+                    height={Number(height)}
+                    priority={true}
+                    style={{ margin: "0 auto" }}
+                  />
+                </>
+              );
+            }
             return (
-              <Image
-                src={props.src!}
-                alt={alt ?? "blog image"}
-                width={Number(width)}
-                height={Number(height)}
-                priority={true}
-              />
+              <>
+                {props.alt && (
+                  <span className="text-sm text-gray-400">{props.alt}</span>
+                )}
+                {/* eslint-disable-next-line jsx-a11y/alt-text, jsx-a11y/alt-text, @next/next/no-img-element */}
+                <img style={{ margin: "0 auto" }} {...props} />
+              </>
             );
           },
         }}

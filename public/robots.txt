@@ -2,3 +2,6 @@ User-agent: *
 Disallow: /portfolio
 Allow: /posts
 Allow: /apps
+
+Sitemap: https://api-unsangu.obj.kr/api/sitemap/index.xml
+Sitemap: /sitemap.xml

@@ -7,18 +7,18 @@ import "./globals.css";
 import SvgUpArrow from "./icons/UpArrow";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://acme.com"),
+  metadataBase: new URL("https://unsangu.com"),
   alternates: {
     canonical: "/",
   },
-  title: "UNSANGU.COM",
-  description: "HUMBLE DEVELOPER",
+  title: "UNSANGU",
+  description: "개발 관련 정보 및 기술 블로그.",
   openGraph: {
-    title: "UNSANGU.COM",
-    description: "HUMBLE DEVELOPER",
+    title: "UNSANGU",
+    description: "개발 관련 정보 및 기술 블로그.",
     images: [
       {
-        url: "https://dev.obj.kr/og.png",
+        url: "https://unsangu.com/og.png",
         width: 1280,
         height: 720,
         alt: "UNSANGU.COM",

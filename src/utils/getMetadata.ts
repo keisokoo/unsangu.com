@@ -16,7 +16,7 @@ export async function getMetadata(
   const description = res.currentPost?.attributes?.summary ?? previousDescription;
   const thumbnail = res.currentPost?.attributes?.thumbnail?.data;
   return {
-    metadataBase: new URL("https://acme.com"),
+    metadataBase: new URL("https://unsangu.com"),
     alternates: {
       canonical: checkOnlyNumber(params.target) ? `/posts/${postId}` : `/posts/${params.target}/${params.slug}/${params.id}`,
     },

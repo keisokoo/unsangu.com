@@ -21,7 +21,7 @@ export default async function GroupListHeader({
         height={thumbnail.data?.attributes.height ?? 0}
         alt={title}
       />
-      <h1 className="text-3xl">{title}</h1>
+      <div className="text-3xl">{title}</div>
       {description && (
         <div className="text-base text-slate-500">{description}</div>
       )}

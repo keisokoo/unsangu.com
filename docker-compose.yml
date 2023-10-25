@@ -6,6 +6,7 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
+    image: unsangu-nextjs-front:1.0
     restart: always
     ports:
       - 3939:3000

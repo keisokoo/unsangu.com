@@ -18,7 +18,7 @@ export default async function Home() {
   const posts = await getRecentPosts();
   const photo = profileData.photo?.data?.attributes;
   return (
-    <main className="mx-auto my-0 w-full max-w-[784px] bg-slate-50 px-4 pb-40 2xl:px-0">
+    <main className={"page-default pb-40"}>
       <div className="flex flex-1 flex-col items-center justify-center gap-4 py-16">
         <div className="w-[100px]">
           <Image
@@ -30,7 +30,7 @@ export default async function Home() {
           />
         </div>
         <div className="flex flex-1 flex-col items-center justify-center gap-1">
-          <h1 className="text-2xl font-bold">{profileData.name}</h1>
+          <div className="text-2xl font-bold">{profileData.name}</div>
           <p className="text-sm">{profileData.specialty}</p>
           <p className="text-xs text-slate-500">
             <a href={`mailto:${profileData.email}`}>{profileData.email}</a>
@@ -78,7 +78,7 @@ export default async function Home() {
                           height={thumbnail.data?.attributes.height ?? 0}
                           alt={title}
                         />
-                        <h1 className="text-3xl">{title}</h1>
+                        <h2 className="text-3xl">{title}</h2>
                         {description && (
                           <div className="text-base text-slate-500">
                             {description}

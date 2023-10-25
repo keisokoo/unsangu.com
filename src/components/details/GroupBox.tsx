@@ -18,7 +18,7 @@ export default async function GroupBox(props: TargetProps) {
   );
   const currentPost = posts.data[currentPostIndex];
   return (
-    <div className="mx-auto my-0 max-w-[784px] lg:px-4">
+    <div className={`page-width mx-auto my-0 lg:px-4`}>
       <div
         id="category-container"
         className="relative flex w-full  select-none flex-col bg-slate-100"

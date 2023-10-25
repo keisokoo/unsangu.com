@@ -16,7 +16,7 @@ export default async function SeriesPage({
   const pages = getPages(pagination.total ?? 0, pagination.pageSize ?? 1);
   const pageList = getPagination(1, pages);
   return (
-    <div className="mx-auto my-0 w-full max-w-[784px] bg-slate-50 px-4 2xl:px-0">
+    <div className={"page-default"}>
       {response.data.map((item) => {
         return (
           <Link

@@ -9,6 +9,32 @@
     background-position: -200% 0;
   }
 }
+:root {
+  --page-width: 860px;
+}
+.some {
+  color: theme(colors.green.600);
+  font-size: theme(fontSize.xs);
+}
+#mdx-container {
+  pre:not([class]) {
+    max-width: 100%;
+    overflow: auto;
+    background-color: theme(colors.gray.200);
+  }
+}
+@layer components {
+  .page-width {
+    max-width: var(--page-width);
+  }
+}
+
+@layer components {
+  .page-default {
+    max-width: var(--page-width);
+    @apply mx-auto my-0 w-full bg-slate-50 px-4 2xl:px-0;
+  }
+}
 .progress-bar {
   position: sticky;
   top: 0px;

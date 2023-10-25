@@ -1,7 +1,6 @@
 
 import { checkHasString, checkOnlyNumber } from "@/utils/valid"
 import * as cheerio from 'cheerio'
-import { log } from "console"
 import { CategoryListItem, CategoryListReturnType, GroupListResponse, GroupResponse, PostType, ProfileType, RandomPostType, ServiceCollectionResponse, ServiceResponse } from "./types"
 
 const fetchOptions = {
@@ -13,7 +12,7 @@ const fetchOptions = {
   cache: 'no-cache' as RequestCache
 }
 const sorting = `&sort[0]=id:desc`
-const pageSize = 4
+const pageSize = 12
 
 const imagePopulate = (target: string) => `&populate[${target}][fields][0]=url&populate[${target}][fields][1]=width&populate[${target}][fields][2]=height&populate[${target}][fields][3]=hash`
 const getCategoryFilter = (filterTitle: string, category?: number | string | null) => category ? `&filters[${filterTitle}][${typeof category === 'number' ? 'id' : checkHasString(category) ? 'slug' : 'id'}]=${category}` : ''
@@ -95,9 +94,9 @@ export async function getCategoryList(): Promise<CategoryListReturnType[]> {
       name: category.attributes.name,
       count: category.attributes.posts.data.attributes.count,
       thumbnail: {
-        url: category.attributes.thumbnail.data.attributes.url,
-        width: category.attributes.thumbnail.data.attributes.width,
-        height: category.attributes.thumbnail.data.attributes.height,
+        url: category.attributes.thumbnail.data?.attributes.url ?? '',
+        width: category.attributes.thumbnail.data?.attributes.width ?? 0,
+        height: category.attributes.thumbnail.data?.attributes.height ?? 0,
       },
       slug: category.attributes.slug,
     })) as CategoryListReturnType[]
@@ -164,7 +163,6 @@ export async function getPostSeriesCount(slug: string) {
 export async function getPostSeries(slug: string) {
   try {
     const query = process.env.NEXT_PUBLIC_API_URL + `/groups/${slug}?populate[posts][populate][contents]=true&populate[posts][populate][thumbnail][fields][1]=url&populate[posts][populate][thumbnail][fields][2]=width&populate[posts][populate][thumbnail][fields][3]=height`
-    log(query)
     const response = await fetch(query, {
       cache: 'no-cache',
     })

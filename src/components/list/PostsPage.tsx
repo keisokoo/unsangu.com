@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 export default async function PostsPage({ ...props }: TargetProps) {
   return (
     <>
-      <article className="mx-auto my-0 w-full max-w-[784px] bg-slate-50 px-4 2xl:px-0">
+      <article className={"page-default"}>
         {props.params.target === "groups" ? (
           <>
             <div className="flex flex-col justify-between gap-0">
