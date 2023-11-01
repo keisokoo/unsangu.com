@@ -3,11 +3,19 @@ const nextConfig = {
   output: "standalone",
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {
-    domains: [
-      process.env.NEXT_PUBLIC_SERVER_HOST,
-      "dev.obj.kr",
-      "unsangu.com",
-      "localhost:3000",
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost:3030",
+      },
+      {
+        protocol: "https",
+        hostname: "**.obj.kr",
+      },
+      {
+        protocol: "https",
+        hostname: "**.unsangu.com",
+      },
     ],
   },
   reactStrictMode: false,

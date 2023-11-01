@@ -45,6 +45,7 @@ export default function RootLayout({
             <SvgUpArrow />
           </div>
         </div>
+        <div id="modal"></div>
         <div id="script"></div>
         <GlobalEvent />
       </body>

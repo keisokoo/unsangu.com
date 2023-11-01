@@ -226,3 +226,25 @@ export async function getApps() {
     console.error(error)
   }
 }
+
+export async function getWorks() {
+  try {
+    const query = process.env.NEXT_PUBLIC_API_URL + `/works?populate=*`
+    const response = await fetch(query, {
+      cache: 'no-cache',
+    })
+    return await response.json() as ServiceCollectionResponse<{
+      id: number
+      title: string
+      contents: string
+      url: string
+      thumbnail: {
+        url: string
+        width: number
+        height: number
+      }
+    }>
+  } catch (error) {
+    console.error(error)
+  }
+}

@@ -9,6 +9,7 @@ function stripMarkdownText(markdownText: string) {
     .use(strip as any)
     .processSync(markdownText)
     .toString();
+
   markdownText =
     markdownText.length > 400 ? markdownText.slice(0, 400) : markdownText;
   return markdownText;

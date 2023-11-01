@@ -1,4 +1,3 @@
-import { log } from "console";
 import rehypeSlug from "rehype-slug";
 import { remark } from "remark";
 import remark2rehype from "remark-rehype";
@@ -29,7 +28,6 @@ interface Props {
 }
 export default async function MDHeaders({ text }: Props) {
   const source = extractH1sFromMarkdown(text);
-  log(source);
   return (
     <div className="sticky top-[60px]">
       {source.map((h1, i) => {
