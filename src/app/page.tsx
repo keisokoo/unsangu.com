@@ -66,11 +66,11 @@ export default async function Home() {
                   >
                     <Link
                       href={`/posts/groups/${group.id}`}
-                      className="font-bold"
+                      className="group font-bold hover:bg-slate-100"
                     >
                       <div className="flex flex-col gap-2">
                         <Image
-                          className="aspect-video h-auto w-full object-cover"
+                          className="aspect-video h-auto w-full object-cover transition-opacity group-hover:opacity-70"
                           src={getFromServer(
                             thumbnail.data?.attributes.url ?? "",
                           )}
@@ -78,16 +78,18 @@ export default async function Home() {
                           height={thumbnail.data?.attributes.height ?? 0}
                           alt={title}
                         />
-                        <h2 className="text-3xl">{title}</h2>
+                        <h2 className="text-3xl transition-colors group-hover:text-green-500">
+                          {title}
+                        </h2>
                         {description && (
-                          <div className="text-base text-slate-500">
+                          <div className="text-base text-slate-500 transition-colors group-hover:text-green-500">
                             {description}
                           </div>
                         )}
-                        <div className="text-sm text-slate-500">
+                        <div className="text-sm text-slate-500 transition-colors group-hover:text-green-500">
                           {dateFormat(updatedAt)}
                         </div>
-                        <div className="text-sm text-slate-400">
+                        <div className="text-sm text-slate-400 transition-colors group-hover:text-green-500">
                           {count}개의 포스트
                         </div>
                       </div>
@@ -126,9 +128,9 @@ export default async function Home() {
               MORE
             </Link>
           </div>
-          <div className="flex flex-col gap-2 border-b border-t border-slate-300 py-8">
+          <div className="flex flex-col gap-0 border-b border-t border-slate-300 pb-8">
             {posts?.data &&
-              posts.data.map((post) => {
+              posts.data.map((post, idx) => {
                 return (
                   <PostListItem key={post.id} post={post} pageUrl={`/posts`} />
                 );

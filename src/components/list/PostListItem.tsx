@@ -1,5 +1,6 @@
 import { CategoryType, PostType, ServiceDataType } from "@/services/types";
 import { dateFormat } from "@/utils/format";
+import clsx from "clsx";
 import Link from "next/link";
 import ListThumbnail from "./ListThumbnail";
 import MDXSummary from "./MDXSummary";
@@ -17,12 +18,19 @@ export default function PostListItem({
   categories,
 }: PostListItemProps) {
   const thumbnail = post.attributes.thumbnail;
+  const summary = post.attributes?.summary?.trim();
   return (
     <div
       key={post.id}
-      className="w-full border-t border-slate-300 py-8 first-of-type:border-none first-of-type:pt-0"
+      className="w-full border-t border-slate-300 first-of-type:border-none first-of-type:pt-0"
     >
-      <Link href={`${pageUrl}/${post.id}`} className="flex flex-row gap-8">
+      <Link
+        href={`${pageUrl}/${post.id}`}
+        className={clsx(
+          { "pb-16": idx === 0, "pb-16 pt-8": idx !== 0 },
+          "group flex flex-row gap-8 rounded-lg transition-all hover:bg-slate-100",
+        )}
+      >
         <div className="flex flex-1 flex-col gap-8">
           <div className="flex flex-row gap-4">
             {thumbnail.data && (
@@ -31,12 +39,12 @@ export default function PostListItem({
               </div>
             )}
             <div className="flex flex-1 flex-col gap-2 lg:w-full">
-              <div className="line-clamp-2 text-xl lg:text-2xl">
+              <div className="line-clamp-2 text-xl transition-colors group-hover:text-green-500 lg:text-2xl">
                 {typeof idx === "number" && `${idx + 1}. `}
                 {post.attributes.title}
               </div>
               <div className="flex items-center gap-2">
-                <div className="text-xs lg:text-sm">
+                <div className="text-xs group-hover:text-slate-400 lg:text-sm">
                   {dateFormat(post.attributes.updatedAt)}
                 </div>
                 {categories &&
@@ -56,17 +64,16 @@ export default function PostListItem({
               </div>
             </div>
           </div>
-          {post.attributes.summary && (
-            <div className="text-slate-600 lg:text-base">
-              <div className="line-clamp-4">{post.attributes.summary}</div>
+          {summary && (
+            <div className="text-slate-600 transition-colors group-hover:text-green-500 lg:text-base">
+              <div className="line-clamp-4">{summary}</div>
             </div>
           )}
-          {!post.attributes.summary &&
-            post.attributes.contents?.[0]?.details && (
-              <div className="text-slate-600 lg:text-base">
-                <MDXSummary text={post.attributes.contents[0].details} />
-              </div>
-            )}
+          {!summary && post.attributes.contents?.[0]?.details && (
+            <div className="text-slate-600 transition-colors group-hover:text-green-600 lg:text-base">
+              <MDXSummary text={post.attributes.contents[0].details} />
+            </div>
+          )}
         </div>
         {thumbnail.data && (
           <div className="hidden w-1/5 shrink-0 lg:block">

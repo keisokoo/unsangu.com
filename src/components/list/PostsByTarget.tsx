@@ -21,14 +21,21 @@ export default async function PostsByTarget({
   const pageUrl = params.slug
     ? `/posts/${params.target}/${params.slug}`
     : `/posts`;
+  if (data.length === 0)
+    return (
+      <div className="flex h-[400px] w-full items-center justify-center text-slate-600">
+        아직 작성된 포스트가 없습니다.
+      </div>
+    );
   return (
-    <div className="flex w-full flex-col gap-16 lg:flex-row lg:flex-wrap">
-      {data.map((post) => {
+    <div className="flex w-full flex-col gap-0 lg:flex-row lg:flex-wrap">
+      {data.map((post, idx) => {
         const categories = !params.target
           ? post.attributes.categories.data ?? []
           : [];
         return (
           <PostListItem
+            idx={idx}
             key={post.id}
             post={post}
             categories={categories}

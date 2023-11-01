@@ -61,7 +61,7 @@ export default async function Sidebar({ ...props }: TargetProps) {
                     {
                       "font-bold": checkCategory(category, categorySlug),
                     },
-                    "text-sm capitalize",
+                    "text-sm capitalize transition-colors hover:text-green-500 hover:underline",
                   )}
                 >
                   {category.name} ({category.count})
