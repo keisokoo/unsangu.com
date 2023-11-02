@@ -6,7 +6,6 @@ import { TargetProps } from "@/services/types";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
-import ScriptPortal from "../ScriptPortal";
 
 export default function GroupBox(props: TargetProps) {
   const { data: res } = useQuery({
@@ -61,9 +60,7 @@ export default function GroupBox(props: TargetProps) {
             })}
           </div>
         </div>
-        <ScriptPortal>
           <CategoryListEvent />
-        </ScriptPortal>
       </div>
     </div>
   );

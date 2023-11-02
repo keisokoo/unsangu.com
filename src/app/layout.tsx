@@ -35,9 +35,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </head>
       <body className={clsx(noto.variable, roboto.variable, noto.className)}>
         <TopNav />
         <ReactQueryProvider>{children}</ReactQueryProvider>
@@ -47,7 +44,6 @@ export default function RootLayout({
           </div>
         </div>
         <div id="modal"></div>
-        <div id="script"></div>
         <GlobalEvent />
       </body>
     </html>

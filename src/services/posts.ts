@@ -233,7 +233,6 @@ export async function getWorks() {
       cache: 'no-cache',
     })
     const data = await response.json()
-    console.log('call works')
     return data as ServiceCollectionResponse<{
       id: number
       title: string

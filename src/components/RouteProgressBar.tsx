@@ -1,18 +1,10 @@
 "use client";
 import clsx from "clsx";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-function isIOS(): boolean {
-  if (typeof window === "undefined") return false;
-  return /iPad|iPhone|iPod/.test(navigator.userAgent);
-}
-function easeInExpo(x: number): number {
-  return x * x * x * x * x;
-}
-const ios = isIOS();
+
 export default function RouteProgressBar() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,7 +12,7 @@ export default function RouteProgressBar() {
       setLoading(false);
     };
     end();
-  }, [pathname, searchParams]);
+  }, [pathname]);
   const handleStart = useCallback(() => {
     setLoading(true);
   }, []);

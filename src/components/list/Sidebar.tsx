@@ -7,7 +7,6 @@ import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
 import CategoryListEvent from "../../events/CategoryListEvent";
-import ScriptPortal from "../ScriptPortal";
 
 const checkCategory = (category: CategoryListReturnType, slugOrId: string) => {
   return checkHasString(slugOrId)
@@ -76,9 +75,7 @@ export default function Sidebar({ ...props }: TargetProps) {
           })}
         </div>
       </div>
-      <ScriptPortal>
         <CategoryListEvent />
-      </ScriptPortal>
     </div>
   );
 }
