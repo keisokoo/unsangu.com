@@ -48,15 +48,13 @@ export default function Home() {
     <main className={"page-default pb-40"}>
       <div className="flex flex-1 flex-col items-center justify-center gap-4 py-16">
         <div className="w-[100px]">
-          <Link href={`/works`}>
-            <Image
-              src={photo.url ? getFromServer(photo.url) : "/og.png"}
-              width={photo.width ?? 100}
-              height={photo.height ?? 100}
-              alt="profile"
-              className="aspect-square rounded-full object-cover"
-            />
-          </Link>
+          <Image
+            src={photo.url ? getFromServer(photo.url) : "/og.png"}
+            width={photo.width ?? 100}
+            height={photo.height ?? 100}
+            alt="profile"
+            className="aspect-square rounded-full object-cover"
+          />
         </div>
         <div className="flex flex-1 flex-col items-center justify-center gap-1">
           <div className="text-2xl font-bold">{profileData.name}</div>

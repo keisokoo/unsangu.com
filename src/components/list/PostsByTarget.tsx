@@ -26,6 +26,7 @@ export default function PostsByTarget({
   const pageUrl = params.slug
     ? `/posts/${params.target}/${params.slug}`
     : `/posts`;
+  const isGroupList = params.target === "groups" && params.slug;
   if (data.length === 0)
     return (
       <div className="flex h-[400px] w-full items-center justify-center text-slate-600">
@@ -40,7 +41,7 @@ export default function PostsByTarget({
           : [];
         return (
           <PostListItem
-            idx={idx}
+            idx={isGroupList ? idx : undefined}
             key={post.id}
             post={post}
             categories={categories}
