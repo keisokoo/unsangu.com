@@ -1,7 +1,9 @@
+"use client";
 import SvgRightArrow from "@/app/icons/RightArrow";
 import { getCategoryList } from "@/services/posts";
 import { CategoryListReturnType, TargetProps } from "@/services/types";
 import { checkHasString } from "@/utils/valid";
+import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
 import CategoryListEvent from "../../events/CategoryListEvent";
@@ -12,8 +14,11 @@ const checkCategory = (category: CategoryListReturnType, slugOrId: string) => {
     ? slugOrId === category.slug
     : slugOrId === String(category.id);
 };
-export default async function Sidebar({ ...props }: TargetProps) {
-  const categories = await getCategoryList();
+export default function Sidebar({ ...props }: TargetProps) {
+  const { data: categories } = useQuery({
+    queryKey: ["hydrate-category-list"],
+    queryFn: () => getCategoryList(),
+  });
   if (!categories) return <div>500 internal error.</div>;
   const categorySlug = props.params.slug;
   const currentCategory = categorySlug

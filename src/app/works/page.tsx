@@ -1,14 +1,23 @@
-import Hydrate from "@/components/Registry/Hydrate.client";
-import getQueryClient from "@/components/Registry/getQueryClient";
+import WorkList from "@/components/list/WorkList";
 import { getWorks } from "@/services/posts";
-import { dehydrate } from "@tanstack/react-query";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
+import { cache } from "react";
 
 export default async function WorksPage() {
+  const getQueryClient = cache(() => new QueryClient());
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["works"],
+    queryKey: ["hydrate-works"],
     queryFn: getWorks,
   });
   const dehydratedState = dehydrate(queryClient);
-  return <Hydrate state={dehydratedState}></Hydrate>;
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <WorkList />
+    </HydrationBoundary>
+  );
 }

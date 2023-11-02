@@ -1,10 +1,12 @@
+"use client";
 import { getPosts } from "@/services/posts";
 import { TargetProps } from "@/services/types";
 import { getPages, getPagination } from "@/utils/pagination";
+import { useQuery } from "@tanstack/react-query";
 import Pagination from "./Pagination";
 import PostListItem from "./PostListItem";
 
-export default async function PostsByTarget({
+export default function PostsByTarget({
   params,
   searchParams: { page },
   ...props
@@ -12,7 +14,10 @@ export default async function PostsByTarget({
   const currentPage = page ? Number(page) : 1;
   const slug = params.slug ?? "";
   const slugType = params.target ?? "categories";
-  const response = await getPosts(currentPage, slug, slugType);
+  const { data: response } = useQuery({
+    queryKey: ["hydrate-posts-with", currentPage, slug, slugType],
+    queryFn: () => getPosts(currentPage, slug, slugType),
+  });
   if (!response) return <div>500 internal error.</div>;
   const { meta, data } = response;
   const { pagination } = meta;

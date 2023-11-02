@@ -1,7 +1,7 @@
 import { TargetProps } from "@/services/types";
-import PostsBySeries from "./PostsBySeries";
-import PostsByTarget from "./PostsByTarget";
-import Sidebar from "./Sidebar";
+import GetCategoryList from "../hydration/GetCategoryList";
+import GetPostsBySeries from "../hydration/GetPostsBySeries";
+import GetPostsWith from "../hydration/GetPostsWith";
 
 export default async function PostsPage({ ...props }: TargetProps) {
   return (
@@ -10,15 +10,15 @@ export default async function PostsPage({ ...props }: TargetProps) {
         {props.params.target === "groups" ? (
           <>
             <div className="flex flex-col justify-between gap-0">
-              <PostsBySeries {...props} />
+              <GetPostsBySeries {...props} />
             </div>
           </>
         ) : (
           <>
             <div className="flex flex-col justify-between gap-0 lg:flex-row lg:gap-4">
-              <Sidebar {...props} />
+              <GetCategoryList {...props} />
               <div className="flex-1">
-                <PostsByTarget {...props} />
+                <GetPostsWith {...props} />
               </div>
             </div>
           </>

@@ -1,51 +1,32 @@
-"use client";
-
 import { getOgMeta } from "@/services/posts";
-import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  AnchorHTMLAttributes,
-  ClassAttributes,
-  useEffect,
-  useState,
-} from "react";
+import { AnchorHTMLAttributes, ClassAttributes } from "react";
 import { ExtraProps } from "react-markdown";
-
-export default function Anchor({
+const getHost = () => {
+  const host = headers().get("host");
+  const protocol = host?.includes("localhost") ? "http" : "https";
+  const currentUrl = `${protocol}://${host}`;
+  return currentUrl;
+};
+export default async function AnchorServer({
   node,
   ...props
 }: ClassAttributes<HTMLAnchorElement> &
   AnchorHTMLAttributes<HTMLAnchorElement> &
   ExtraProps) {
-  const [currentBlog, set_currentBlog] = useState(false);
-  const [currentUrl, set_currentUrl] = useState("");
-  const [targetUrl, set_targetUrl] = useState("");
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const isBlogSelf =
-      props.children?.toString().includes("$og") || props.href?.startsWith("/");
-    const currentHost = window.location.origin;
-    const url = `${
-      props.href?.startsWith("/") ? currentHost : ""
+  const currentBlog =
+    props.children?.toString().includes("$og") || props.href?.startsWith("/");
+  if (currentBlog) {
+    const currentUrl = getHost();
+    const targetUrl = `${
+      props.href?.startsWith("/") ? currentUrl : ""
     }${props.href!}`;
-    set_targetUrl(url);
-    set_currentBlog(!!isBlogSelf);
-    set_currentUrl(currentHost);
-    return () => {
-      set_currentBlog(false);
-      set_currentUrl("");
-      set_targetUrl("");
-    };
-  }, [props]);
-  const { data: ogMeta } = useQuery({
-    queryKey: ["get-og-meta", targetUrl],
-    queryFn: () => getOgMeta(targetUrl),
-    enabled: currentBlog && !!targetUrl,
-  });
-  if (ogMeta) {
+    const ogMeta = await getOgMeta(targetUrl);
     const Anchor = props.href?.startsWith("/") ? Link : "a";
+
     return (
       <Anchor
         href={props.href ?? ""}

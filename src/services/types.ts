@@ -176,6 +176,7 @@ export type GroupResponse = {
   title: string
   description: string
   thumbnail: ThumbnailDataType
+  updatedAt: string
   posts: {
     data: ServiceDataType<PostType>[]
   }

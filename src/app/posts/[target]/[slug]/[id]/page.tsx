@@ -1,5 +1,4 @@
-import PostDetails from "@/components/details/PostDetails";
-import { getPostByID } from "@/services/posts";
+import GetPostBy from "@/components/hydration/GetPostBy";
 import { TargetProps } from "@/services/types";
 import { getMetadata } from "@/utils/getMetadata";
 import { checkOnlyNumber } from "@/utils/valid";
@@ -19,11 +18,5 @@ export default async function PostByID(props: TargetProps) {
       ? Number(props.params.id)
       : null;
   if (!postId) return <div>404</div>;
-  const res = await getPostByID(
-    Number(props.params.id),
-    props.params.slug,
-    props.params.target,
-  );
-  if (!res) return <div>500 internal error.</div>;
-  return <PostDetails item={res} {...props} />;
+  return <GetPostBy {...props} />;
 }

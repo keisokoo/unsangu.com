@@ -1,15 +1,16 @@
-import Anchor from "@/components/forMarkdown/Anchor";
+"use client";
 import Code from "@/components/forMarkdown/Code";
 import Photo from "@/components/forMarkdown/Photo";
 import Pre from "@/components/forMarkdown/Pre";
 import Markdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
+import Anchor from "../forMarkdown/Anchor";
 interface Props {
   text: string;
 }
 
-export default async function MDXContent({ text }: Props) {
+export default function MDXContent({ text }: Props) {
   return (
     <>
       <Markdown
@@ -30,7 +31,6 @@ max-w-full md:prose-base lg:prose-lg`}
           img: Photo,
           pre: Pre,
           code: Code,
-          /* @ts-expect-error Server Component */
           a: Anchor,
         }}
       >

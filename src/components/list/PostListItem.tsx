@@ -1,3 +1,4 @@
+"use client";
 import { CategoryType, PostType, ServiceDataType } from "@/services/types";
 import { dateFormat } from "@/utils/format";
 import clsx from "clsx";
@@ -70,7 +71,7 @@ export default function PostListItem({
             </div>
           )}
           {!summary && post.attributes.contents?.[0]?.details && (
-            <div className="text-slate-600 transition-colors group-hover:text-green-600 lg:text-base">
+            <div className="text-slate-600 transition-colors group-hover:text-green-500 lg:text-base">
               <MDXSummary text={post.attributes.contents[0].details} />
             </div>
           )}

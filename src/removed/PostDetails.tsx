@@ -8,8 +8,7 @@ import { checkOnlyNumber } from "@/utils/valid";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import ContentBody from "./ContentBody";
-import GroupBox from "./GroupBox";
+import ContentBody from "../components/details/ContentBody";
 interface Props extends TargetProps {
   item: {
     prevPost: ServiceDataType<PostType>;
@@ -38,9 +37,6 @@ export default async function PostDetails({
   if (!item.currentPost) return <div>not found.</div>;
   return (
     <>
-      {params.target === "groups" && (
-        <GroupBox params={params} searchParams={searchParams} />
-      )}
       <article className={"page-default"}>
         {item.currentPost && <ContentBody currentPost={item.currentPost} />}
         <div className="flex w-full items-center justify-center gap-4 py-20">

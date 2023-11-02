@@ -162,7 +162,7 @@ export async function getPostSeriesCount(slug: string) {
 }
 export async function getPostSeries(slug: string) {
   try {
-    const query = process.env.NEXT_PUBLIC_API_URL + `/groups/${slug}?populate[posts][populate][contents]=true&populate[posts][populate][thumbnail][fields][1]=url&populate[posts][populate][thumbnail][fields][2]=width&populate[posts][populate][thumbnail][fields][3]=height`
+    const query = process.env.NEXT_PUBLIC_API_URL + `/groups/${slug}?populate[posts][populate][contents]=true&populate[posts][populate][thumbnail][fields][1]=url&populate[posts][populate][thumbnail][fields][2]=width&populate[posts][populate][thumbnail][fields][3]=height&populate[thumbnail]=true`
     const response = await fetch(query, {
       cache: 'no-cache',
     })
@@ -190,7 +190,6 @@ export async function getOgMeta(url: string) {
       imageWidth,
       imageHeight,
     }
-
   } catch (error) {
     console.error(error)
   }
@@ -233,7 +232,9 @@ export async function getWorks() {
     const response = await fetch(query, {
       cache: 'no-cache',
     })
-    return await response.json() as ServiceCollectionResponse<{
+    const data = await response.json()
+    console.log('call works')
+    return data as ServiceCollectionResponse<{
       id: number
       title: string
       contents: string

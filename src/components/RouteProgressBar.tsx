@@ -32,6 +32,7 @@ export default function RouteProgressBar() {
         : ((e.target as HTMLAnchorElement).closest("a") as HTMLAnchorElement) ??
           null;
       if (!target) return;
+      if (target.getAttribute("target") === "_blank") return;
       if (target.href === window.location.href) return;
       handleStart();
     };
