@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  unsangu_new:
+    container_name: unsangu_new
+    build:
+      context: ./
+      dockerfile: ./dev.Dockerfile
+    image: unsangu-nextjs-dev:1.0
+    restart: always
+    ports:
+      - 3838:3000
+    networks:
+      - obj_network
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+
+networks:
+  obj_network:
+    external: true

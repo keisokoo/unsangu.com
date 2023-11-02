@@ -1,3 +1,4 @@
+import ReactQueryClient from "@/components/Registry/ReactQueryClient";
 import TopNav from "@/components/TopNav";
 import GlobalEvent from "@/events/GlobalEvent";
 import clsx from "clsx";
@@ -39,7 +40,7 @@ export default function RootLayout({
       </head>
       <body className={clsx(noto.variable, roboto.variable, noto.className)}>
         <TopNav />
-        {children}
+        <ReactQueryClient>{children}</ReactQueryClient>
         <div className="top-btn-container">
           <div className="top-btn">
             <SvgUpArrow />
