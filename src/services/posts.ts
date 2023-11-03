@@ -37,7 +37,7 @@ export async function getPostByID(id: number, category?: number | string | null,
     console.error(error)
   }
 }
-export async function getCurrentPostById(id: number) {
+export async function getPostMetadataById(id: number) {
   try {
     const currentPost = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts/${id}?populate=thumbnail`, fetchOptions)
     return {
@@ -162,7 +162,7 @@ export async function getPostSeriesCount(slug: string) {
 }
 export async function getPostSeries(slug: string) {
   try {
-    const query = process.env.NEXT_PUBLIC_API_URL + `/groups/${slug}?populate[posts][populate][contents]=true&populate[posts][populate][thumbnail][fields][1]=url&populate[posts][populate][thumbnail][fields][2]=width&populate[posts][populate][thumbnail][fields][3]=height`
+    const query = process.env.NEXT_PUBLIC_API_URL + `/groups/${slug}?populate[posts][populate][contents]=true&populate[posts][populate][thumbnail][fields][1]=url&populate[posts][populate][thumbnail][fields][2]=width&populate[posts][populate][thumbnail][fields][3]=height&populate[thumbnail]=true`
     const response = await fetch(query, {
       cache: 'no-cache',
     })

@@ -1,3 +1,4 @@
+"use client";
 import { getIcon } from "@/utils/syntax";
 import { ClassAttributes, HTMLAttributes, ReactElement } from "react";
 import { BiClipboard } from "react-icons/bi";

@@ -1,3 +1,4 @@
+"use client";
 import Anchor from "@/components/forMarkdown/Anchor";
 import Code from "@/components/forMarkdown/Code";
 import Photo from "@/components/forMarkdown/Photo";
@@ -9,7 +10,7 @@ interface Props {
   text: string;
 }
 
-export default async function MDXContent({ text }: Props) {
+export default function MDXContent({ text }: Props) {
   return (
     <>
       <Markdown
@@ -30,7 +31,6 @@ max-w-full md:prose-base lg:prose-lg`}
           img: Photo,
           pre: Pre,
           code: Code,
-          /* @ts-expect-error Server Component */
           a: Anchor,
         }}
       >

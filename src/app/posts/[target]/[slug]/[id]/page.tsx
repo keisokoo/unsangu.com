@@ -1,29 +1,32 @@
-import PostDetails from "@/components/details/PostDetails";
-import { getPostByID } from "@/services/posts";
+import ContentsDetails from "@/components/details/ContentsDetails";
+import dehydrated from "@/components/post-hydration/dehydrated";
 import { TargetProps } from "@/services/types";
 import { getMetadata } from "@/utils/getMetadata";
-import { checkOnlyNumber } from "@/utils/valid";
+import { checkOnlyNumber, targetCheck } from "@/utils/valid";
+import { HydrationBoundary } from "@tanstack/react-query";
 import { ResolvingMetadata } from "next";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata(
   { params }: TargetProps,
   parent: ResolvingMetadata,
 ) {
-  return getMetadata(params, parent);
+  return await getMetadata(params, parent);
 }
 export default async function PostByID(props: TargetProps) {
-  const postId =
+  if (!targetCheck(props.params.target)) return notFound();
+  const postIdNumberValid =
     props.params.id &&
     !isNaN(Number(props.params.id)) &&
-    checkOnlyNumber(props.params.id)
-      ? Number(props.params.id)
-      : null;
-  if (!postId) return <div>404</div>;
-  const res = await getPostByID(
-    Number(props.params.id),
-    props.params.slug,
-    props.params.target,
+    checkOnlyNumber(props.params.id);
+  const postId = postIdNumberValid ? Number(props.params.id) : null;
+  const slug = props.params.slug;
+  const target = props.params.target;
+  if (!postId) return notFound();
+  const dehydratedState = await dehydrated(props);
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <ContentsDetails postId={postId} slug={slug} target={target} {...props} />
+    </HydrationBoundary>
   );
-  if (!res) return <div>500 internal error.</div>;
-  return <PostDetails item={res} {...props} />;
 }

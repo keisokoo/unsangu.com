@@ -22,7 +22,7 @@ export default function RecentSeriesList() {
           MORE
         </Link>
       </div>
-      <div className="flex justify-between gap-4 border-b border-t border-slate-300 py-8">
+      <div className="flex flex-col justify-between gap-4 border-b border-t border-slate-300 py-8 lg:flex-row">
         {groups?.data &&
           groups.data.map((group) => {
             const {
@@ -36,7 +36,7 @@ export default function RecentSeriesList() {
             return (
               <div
                 key={group.id}
-                className="flex w-[calc(50%-1rem)] flex-col gap-2"
+                className="flex w-full flex-col gap-2 lg:w-[calc(50%-1rem)]"
               >
                 <Link
                   href={`/posts/groups/${group.id}`}
@@ -50,7 +50,7 @@ export default function RecentSeriesList() {
                       height={thumbnail.data?.attributes.height ?? 0}
                       alt={title}
                     />
-                    <h2 className="text-3xl transition-colors group-hover:text-green-500">
+                    <h2 className="text-xl transition-colors group-hover:text-green-500 lg:text-2xl xl:text-3xl">
                       {title}
                     </h2>
                     {description && (

@@ -1,3 +1,4 @@
+"use client";
 import { PostType, ServiceDataType } from "@/services/types";
 import { dateFormat } from "@/utils/format";
 import { getFromServer } from "@/utils/getServerImage";

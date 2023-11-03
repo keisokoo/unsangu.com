@@ -1,18 +1,23 @@
+"use client";
+
 import { getPostSeriesList } from "@/services/posts";
 import { TargetProps } from "@/services/types";
 import { dateFormat } from "@/utils/format";
 import { getFromServer } from "@/utils/getServerImage";
 import { getPages, getPagination } from "@/utils/pagination";
+import { checkOnlyNumber } from "@/utils/valid";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import Pagination from "./Pagination";
-export default async function SeriesPage({
-  searchParams: { page },
-}: TargetProps) {
-  const currentPage = page ? Number(page) : 1;
-  const response = await getPostSeriesList(currentPage);
-  if (!response) return <div>500 internal error.</div>;
 
+export default function SeriesPage({ searchParams: { page } }: TargetProps) {
+  const currentPage = page && checkOnlyNumber(page) ? Number(page) : 1;
+  const { data: response } = useQuery({
+    queryKey: ["hydrate-series-list", currentPage],
+    queryFn: () => getPostSeriesList(currentPage),
+  });
+  if (!response) return <div>500 internal error.</div>;
   const { pagination } = response.meta;
   const pages = getPages(pagination.total ?? 0, pagination.pageSize ?? 1);
   const pageList = getPagination(1, pages);

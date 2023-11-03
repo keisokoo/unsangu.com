@@ -1,16 +1,17 @@
+"use client";
 import SvgRightArrow from "@/app/icons/RightArrow";
 import CategoryListEvent from "@/events/CategoryListEvent";
 import { getPostSeries } from "@/services/posts";
 import { TargetProps } from "@/services/types";
-import { checkOnlyNumber } from "@/utils/valid";
+import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
-import ScriptPortal from "../ScriptPortal";
 
-export default async function GroupBox(props: TargetProps) {
-  if (props.params.target !== "groups") return <></>;
-  if (!checkOnlyNumber(props.params.slug)) return <></>;
-  const res = await getPostSeries(props.params.slug);
+export default function GroupBox(props: TargetProps) {
+  const { data: res } = useQuery({
+    queryKey: ["hydrate-posts-by-series", props.params.slug],
+    queryFn: () => getPostSeries(props.params.slug),
+  });
   if (!res?.data?.attributes?.posts) return <></>;
   const { title, posts } = res.data.attributes;
   const currentPostIndex = posts.data.findIndex(
@@ -59,9 +60,7 @@ export default async function GroupBox(props: TargetProps) {
             })}
           </div>
         </div>
-        <ScriptPortal>
-          <CategoryListEvent />
-        </ScriptPortal>
+        <CategoryListEvent />
       </div>
     </div>
   );

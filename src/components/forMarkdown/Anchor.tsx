@@ -1,26 +1,79 @@
+"use client";
+
 import { getOgMeta } from "@/services/posts";
-import { getHost } from "@/utils/syntax";
+import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
-import { AnchorHTMLAttributes, ClassAttributes } from "react";
+import {
+  AnchorHTMLAttributes,
+  ClassAttributes,
+  useEffect,
+  useState,
+} from "react";
 import { ExtraProps } from "react-markdown";
 
-export default async function Anchor({
+export default function Anchor({
   node,
   ...props
 }: ClassAttributes<HTMLAnchorElement> &
   AnchorHTMLAttributes<HTMLAnchorElement> &
   ExtraProps) {
-  const currentBlog =
-    props.children?.toString().includes("$og") || props.href?.startsWith("/");
-  if (currentBlog) {
-    const currentUrl = getHost();
-    const ogMeta = await getOgMeta(
-      `${props.href?.startsWith("/") ? currentUrl : ""}${props.href!}`,
+  const [currentBlog, set_currentBlog] = useState(false);
+  const [currentUrl, set_currentUrl] = useState("");
+  const [targetUrl, set_targetUrl] = useState("");
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isBlogSelf =
+      props.children?.toString().includes("$og") || props.href?.startsWith("/");
+    const currentHost = window.location.origin;
+    const url = `${
+      props.href?.startsWith("/") ? currentHost : ""
+    }${props.href!}`;
+    set_targetUrl(url);
+    set_currentBlog(!!isBlogSelf);
+    set_currentUrl(currentHost);
+    return () => {
+      set_currentBlog(false);
+      set_currentUrl("");
+      set_targetUrl("");
+    };
+  }, [props]);
+  if (currentBlog && targetUrl) {
+    return (
+      <OgAnchor
+        {...props}
+        targetUrl={targetUrl}
+        currentBlog={currentBlog}
+        currentUrl={currentUrl}
+      />
     );
+  }
+  return (
+    <a
+      {...props}
+      className="text-green-500"
+      target="_blank"
+      rel="noopener noreferrer"
+    />
+  );
+}
+function OgAnchor(
+  props: ClassAttributes<HTMLAnchorElement> &
+    AnchorHTMLAttributes<HTMLAnchorElement> & {
+      targetUrl: string;
+      currentBlog: boolean;
+      currentUrl: string;
+    },
+) {
+  const { currentBlog, currentUrl, targetUrl } = props;
+  const { data: ogMeta } = useQuery({
+    queryKey: ["get-og-meta", targetUrl],
+    queryFn: () => getOgMeta(targetUrl),
+    enabled: currentBlog && !!targetUrl,
+  });
+  if (ogMeta) {
     const Anchor = props.href?.startsWith("/") ? Link : "a";
-
     return (
       <Anchor
         href={props.href ?? ""}
@@ -51,12 +104,4 @@ export default async function Anchor({
       </Anchor>
     );
   }
-  return (
-    <a
-      {...props}
-      className="text-green-500"
-      target="_blank"
-      rel="noopener noreferrer"
-    />
-  );
 }

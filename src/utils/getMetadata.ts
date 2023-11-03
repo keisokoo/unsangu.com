@@ -1,4 +1,4 @@
-import { getCurrentPostById } from "@/services/posts";
+import { getPostMetadataById } from "@/services/posts";
 import { TargetParams } from "@/services/types";
 import { ResolvingMetadata } from "next";
 import { getFromServer } from "./getServerImage";
@@ -8,7 +8,7 @@ export async function getMetadata(
   params: TargetParams,
   parent: ResolvingMetadata,) {
   const postId = checkOnlyNumber(params.target) ? Number(params.target) : Number(params.id);
-  const res = await getCurrentPostById(postId);
+  const res = await getPostMetadataById(postId);
   if (!res) return;
   const previousImages = (await parent).openGraph?.images || [];
   const previousDescription = (await parent).description ?? "";

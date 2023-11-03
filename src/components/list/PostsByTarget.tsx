@@ -1,19 +1,41 @@
+"use client";
 import { getPosts } from "@/services/posts";
 import { TargetProps } from "@/services/types";
 import { getPages, getPagination } from "@/utils/pagination";
+import { useQuery } from "@tanstack/react-query";
 import Pagination from "./Pagination";
 import PostListItem from "./PostListItem";
 
-export default async function PostsByTarget({
+export default function PostsByTarget({
   params,
   searchParams: { page },
   ...props
 }: TargetProps) {
   const currentPage = page ? Number(page) : 1;
-  const slug = params.slug ?? "";
-  const slugType = params.target ?? "categories";
-  const response = await getPosts(currentPage, slug, slugType);
-  if (!response) return <div>500 internal error.</div>;
+  const slug = params.slug;
+  const target = params.target;
+  const {
+    data: response,
+    isFetching,
+    isPending,
+    isLoading,
+  } = useQuery({
+    queryKey: ["hydrate-posts-with", currentPage, slug, target],
+    queryFn: () => getPosts(currentPage, slug, target),
+  });
+  if (!response)
+    return (
+      <div>
+        current...
+        {isFetching
+          ? "fetching"
+          : isPending
+          ? "pending"
+          : isLoading
+          ? "loading"
+          : "unknown"}
+      </div>
+    );
   const { meta, data } = response;
   const { pagination } = meta;
   const pages = getPages(pagination.total ?? 0, pagination.pageSize ?? 1);
@@ -21,6 +43,7 @@ export default async function PostsByTarget({
   const pageUrl = params.slug
     ? `/posts/${params.target}/${params.slug}`
     : `/posts`;
+  const isGroupList = params.target === "groups" && params.slug;
   if (data.length === 0)
     return (
       <div className="flex h-[400px] w-full items-center justify-center text-slate-600">
@@ -35,7 +58,7 @@ export default async function PostsByTarget({
           : [];
         return (
           <PostListItem
-            idx={idx}
+            idx={isGroupList ? idx : undefined}
             key={post.id}
             post={post}
             categories={categories}

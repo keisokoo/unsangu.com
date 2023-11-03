@@ -1,7 +1,6 @@
-import Hydrate from "@/components/Registry/Hydrate.client";
 import getQueryClient from "@/components/Registry/getQueryClient";
 import { getWorks } from "@/services/posts";
-import { dehydrate } from "@tanstack/react-query";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 export default async function WorksPage() {
   const queryClient = getQueryClient();
@@ -10,5 +9,5 @@ export default async function WorksPage() {
     queryFn: getWorks,
   });
   const dehydratedState = dehydrate(queryClient);
-  return <Hydrate state={dehydratedState}></Hydrate>;
+  return <HydrationBoundary state={dehydratedState}></HydrationBoundary>;
 }
