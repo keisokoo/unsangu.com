@@ -1,5 +1,5 @@
 User-agent: *
-Disallow: /portfolio
+Disallow: /works
 Allow: /posts
 Allow: /apps
 

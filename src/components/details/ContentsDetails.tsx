@@ -3,7 +3,6 @@ import SvgLeftArrow from "@/app/icons/LeftArrow";
 import SvgRightArrow from "@/app/icons/RightArrow";
 import { getPostByID, getRandomPost } from "@/services/posts";
 import { TargetProps } from "@/services/types";
-import { checkOnlyNumber } from "@/utils/valid";
 import { useQueries } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
@@ -42,9 +41,7 @@ export default function ContentsDetails({
       },
     ],
   });
-  const pageUrl = checkOnlyNumber(target ?? "")
-    ? `/posts`
-    : `/posts/${target}/${slug}`;
+  const pageUrl = target && slug ? `/posts/${target}/${slug}` : `/posts`;
   const prevHref = item?.prevPost?.id ? `${pageUrl}/${item.prevPost.id}` : null;
   const nextHref = item?.nextPost?.id ? `${pageUrl}/${item.nextPost.id}` : null;
   return (

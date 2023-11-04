@@ -6,10 +6,11 @@ import "prismjs/components/prism-json.min";
 import "prismjs/components/prism-jsx.min";
 import "prismjs/components/prism-tsx.min";
 import "prismjs/components/prism-typescript.min";
-import "prismjs/components/prism-yaml.min";
+// import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
+// import 'prismjs/plugins/line-numbers/prism-line-numbers.min';
 import { ClassAttributes, HTMLAttributes } from "react";
 import { ExtraProps } from "react-markdown";
-import "./vsdark.css"; // 예시로 prism-tomorrow 테마를 사용함
+import "./vsdark.css";
 
 export default function CodeBlock(
   props: ClassAttributes<HTMLElement> &
@@ -21,21 +22,23 @@ export default function CodeBlock(
   );
   const { children, node, className, ...rest } = props;
 
-  if (!Prism.languages[currentLanguage])
-    return <code {...rest}>{children}</code>;
-
   const html = Prism.highlight(
     String(children),
-    Prism.languages[currentLanguage],
+    Prism.languages[currentLanguage] ?? Prism.languages["typescript"],
     currentLanguage,
   );
+  if (!Prism.languages[currentLanguage])
+    return <code {...rest}>{children}</code>;
   return (
-    <div className={`pre language-${currentLanguage}`}>
+    <pre
+      data-syntax=""
+      className={`line-numbers language-${currentLanguage}`}
+    >
       <code
         className={`language-${currentLanguage}`}
         dangerouslySetInnerHTML={{ __html: html }}
         {...rest}
       ></code>
-    </div>
+    </pre>
   );
 }

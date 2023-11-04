@@ -3,6 +3,7 @@
 import { codeCopy } from "@/utils/helpers";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+
 export default function GlobalEvent() {
   const pathname = usePathname();
   const router = useRouter();
@@ -132,6 +133,7 @@ export default function GlobalEvent() {
       copyButton.addEventListener("click", codeCopy);
     });
     window.addEventListener("scroll", handleStickyCheck);
+
     return () => {
       copyButtons.forEach((copyButton) => {
         copyButton.removeEventListener("click", codeCopy);
@@ -210,6 +212,7 @@ export default function GlobalEvent() {
     window.addEventListener("scroll", toggleTopButton);
     burger?.addEventListener("click", toggleIcon);
     toggleTopButton();
+
     return () => {
       burger?.removeEventListener("click", toggleIcon);
       topBtn?.removeEventListener("click", scrollToTop);
