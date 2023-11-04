@@ -1,11 +1,10 @@
-"use client";
 import Anchor from "@/components/forMarkdown/Anchor";
-import Code from "@/components/forMarkdown/Code";
 import Photo from "@/components/forMarkdown/Photo";
 import Pre from "@/components/forMarkdown/Pre";
 import Markdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
+import CodeBlock from "../forMarkdown/CodeBlock";
 interface Props {
   text: string;
 }
@@ -30,7 +29,7 @@ max-w-full md:prose-base lg:prose-lg`}
         components={{
           img: Photo,
           pre: Pre,
-          code: Code,
+          code: CodeBlock,
           a: Anchor,
         }}
       >

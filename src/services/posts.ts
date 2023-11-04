@@ -1,7 +1,7 @@
 
 import { checkHasString, checkOnlyNumber } from "@/utils/valid"
 import * as cheerio from 'cheerio'
-import { CategoryListItem, CategoryListReturnType, GroupListResponse, GroupResponse, PostType, ProfileType, RandomPostType, ServiceCollectionResponse, ServiceResponse } from "./types"
+import { CategoryListItem, CategoryListReturnType, GroupListResponse, GroupResponse, PostType, ProfileType, RandomPostType, ServiceCollectionResponse, ServiceResponse, WorkCategory, WorkType, Works } from "./types"
 
 const fetchOptions = {
   method: 'GET',
@@ -194,7 +194,6 @@ export async function getOgMeta(url: string) {
   } catch (error) {
     console.error(error)
   }
-
 }
 
 export async function getProfile() {
@@ -229,21 +228,34 @@ export async function getApps() {
 
 export async function getWorks() {
   try {
-    const query = process.env.NEXT_PUBLIC_API_URL + `/works?populate=*`
+    const query = process.env.NEXT_PUBLIC_API_URL + `/works?populate=*&pagination[pageSize]=999&sort[0]=start:desc`
     const response = await fetch(query, {
       cache: 'no-cache',
     })
-    return await response.json() as ServiceCollectionResponse<{
-      id: number
-      title: string
-      contents: string
-      url: string
-      thumbnail: {
-        url: string
-        width: number
-        height: number
-      }
-    }>
+    return await response.json() as ServiceCollectionResponse<Works>
+  } catch (error) {
+    console.error(error)
+  }
+}
+export async function getWorksByType(type: WorkType | null) {
+  try {
+    if (!type) return {} as ServiceCollectionResponse<Works>
+    const query = process.env.NEXT_PUBLIC_API_URL + `/works?populate=*&pagination[pageSize]=999&filters[type]=${type}&sort[0]=start:desc`
+    const response = await fetch(query, {
+      cache: 'no-cache',
+    })
+    return await response.json() as ServiceCollectionResponse<Works>
+  } catch (error) {
+    console.error(error)
+  }
+}
+export async function getWorksWithWorkCategory() {
+  try {
+    const query = process.env.NEXT_PUBLIC_API_URL + `/work-categories?populate[works][populate][links]=true&populate[works][populate][thumbnails]=true&sort[0]=start:desc&pagination[pageSize]=999`
+    const response = await fetch(query, {
+      cache: 'no-cache',
+    })
+    return await response.json() as ServiceCollectionResponse<WorkCategory>
   } catch (error) {
     console.error(error)
   }

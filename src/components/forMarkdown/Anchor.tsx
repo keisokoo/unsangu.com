@@ -71,6 +71,7 @@ function OgAnchor(
     queryKey: ["get-og-meta", targetUrl],
     queryFn: () => getOgMeta(targetUrl),
     enabled: currentBlog && !!targetUrl,
+    refetchOnWindowFocus: false,
   });
   if (ogMeta) {
     const Anchor = props.href?.startsWith("/") ? Link : "a";

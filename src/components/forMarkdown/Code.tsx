@@ -1,4 +1,3 @@
-"use client";
 import { getCurrentLanguage } from "@/utils/syntax";
 import { ClassAttributes, HTMLAttributes } from "react";
 import { ExtraProps } from "react-markdown";

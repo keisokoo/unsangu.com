@@ -14,28 +14,11 @@ export default function PostsByTarget({
   const currentPage = page ? Number(page) : 1;
   const slug = params.slug;
   const target = params.target;
-  const {
-    data: response,
-    isFetching,
-    isPending,
-    isLoading,
-  } = useQuery({
+  const { data: response } = useQuery({
     queryKey: ["hydrate-posts-with", currentPage, slug, target],
     queryFn: () => getPosts(currentPage, slug, target),
   });
-  if (!response)
-    return (
-      <div>
-        current...
-        {isFetching
-          ? "fetching"
-          : isPending
-          ? "pending"
-          : isLoading
-          ? "loading"
-          : "unknown"}
-      </div>
-    );
+  if (!response) return <div></div>;
   const { meta, data } = response;
   const { pagination } = meta;
   const pages = getPages(pagination.total ?? 0, pagination.pageSize ?? 1);

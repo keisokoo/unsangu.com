@@ -6,7 +6,6 @@ import type { Metadata } from "next";
 import { noto, roboto } from "./fonts";
 import "./globals.css";
 import SvgUpArrow from "./icons/UpArrow";
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://unsangu.com"),
   alternates: {

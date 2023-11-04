@@ -7,4 +7,4 @@ dayjs.extend(timezone)
 
 dayjs.locale("ko");
 
-export const dateFormat = (date: string) => dayjs(date).tz('Asia/Seoul').format("YYYY-MM-DD, (ddd) HH:mm");
+export const dateFormat = (date: string, format: string = "YYYY-MM-DD, (ddd) HH:mm") => dayjs(date).tz('Asia/Seoul').format(format);
