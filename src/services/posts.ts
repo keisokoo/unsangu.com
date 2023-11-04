@@ -1,6 +1,5 @@
 
 import { checkHasString, checkOnlyNumber } from "@/utils/valid"
-import * as cheerio from 'cheerio'
 import { CategoryListItem, CategoryListReturnType, GroupListResponse, GroupResponse, PostType, ProfileType, RandomPostType, ServiceCollectionResponse, ServiceResponse, WorkCategory, WorkType, Works } from "./types"
 
 const fetchOptions = {
@@ -167,30 +166,6 @@ export async function getPostSeries(slug: string) {
       cache: 'no-cache',
     })
     return await response.json() as ServiceResponse<GroupResponse>
-  } catch (error) {
-    console.error(error)
-  }
-}
-export async function getOgMeta(url: string) {
-  try {
-    const response = await fetch(`${url}`, {
-      cache: 'no-cache',
-    })
-    const html = await response.text()
-    const $ = cheerio.load(html)
-    const title = $('meta[property="og:title"]').attr('content')
-    const description = $('meta[property="og:description"]').attr('content')
-    const image = $('meta[property="og:image"]').attr('content')
-    const imageWidth = $('meta[property="og:image:width"]').attr('content')
-    const imageHeight = $('meta[property="og:image:height"]').attr('content')
-    return {
-      title,
-      description,
-      image,
-      imageWidth,
-      imageHeight,
-    }
-
   } catch (error) {
     console.error(error)
   }

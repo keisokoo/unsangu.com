@@ -19,6 +19,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "**.unsangu.com",
       },
+      {
+        protocol: "https",
+        hostname: "unsangu.com",
+      },
     ],
   },
   reactStrictMode: false,

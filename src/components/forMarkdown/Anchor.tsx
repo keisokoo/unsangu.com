@@ -1,6 +1,5 @@
 "use client";
 
-import { getOgMeta } from "@/services/posts";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import Image from "next/image";
@@ -12,7 +11,31 @@ import {
   useState,
 } from "react";
 import { ExtraProps } from "react-markdown";
+async function fetchOpenGraphData(url: string) {
+  const response = await fetch(url, { cache: "no-cache" });
+  const html = await response.text();
 
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  const metaTags = {
+    title: (doc.querySelector('meta[property="og:title"]') as HTMLMetaElement)
+      ?.content,
+    description: (
+      doc.querySelector('meta[property="og:description"]') as HTMLMetaElement
+    )?.content,
+    image: (doc.querySelector('meta[property="og:image"]') as HTMLMetaElement)
+      ?.content,
+    imageWidth: (
+      doc.querySelector('meta[property="og:image:width"]') as HTMLMetaElement
+    )?.content,
+    imageHeight: (
+      doc.querySelector('meta[property="og:image:height"]') as HTMLMetaElement
+    )?.content,
+  };
+
+  return metaTags;
+}
 export default function Anchor({
   node,
   ...props
@@ -69,7 +92,7 @@ function OgAnchor(
   const { currentBlog, currentUrl, targetUrl } = props;
   const { data: ogMeta } = useQuery({
     queryKey: ["get-og-meta", targetUrl],
-    queryFn: () => getOgMeta(targetUrl),
+    queryFn: () => fetchOpenGraphData(targetUrl),
     enabled: currentBlog && !!targetUrl,
     refetchOnWindowFocus: false,
   });
