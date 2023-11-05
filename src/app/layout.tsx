@@ -3,6 +3,7 @@ import TopNav from "@/components/TopNav";
 import GlobalEvent from "@/events/GlobalEvent";
 import clsx from "clsx";
 import type { Metadata } from "next";
+import Script from "next/script";
 import { noto, roboto } from "./fonts";
 import "./globals.css";
 import SvgUpArrow from "./icons/UpArrow";
@@ -34,10 +35,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+    <Script id="google-tag" strategy="afterInteractive">{`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PFG3G4G8');`}</Script>
       <head>
+      {/* Start Google Tag Manager */}
+{/* End Google Tag Manager */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={clsx(noto.variable, roboto.variable, noto.className)}>
+<noscript
+  dangerouslySetInnerHTML={{
+    __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PFG3G4G8"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe>`
+  }}
+/>
         <TopNav />
         <ReactQueryClient>{children}</ReactQueryClient>
         <div className="top-btn-container">

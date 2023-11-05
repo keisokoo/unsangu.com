@@ -75,7 +75,7 @@ export default function WorkList({}) {
           workCategory.data.length > 0 &&
           workCategory.data.map((category) => {
             return (
-              <div key={category.id} className="">
+              <div key={category.id} className="border py-8 px-4 rounded-2xl border-slate-600">
                 <div className="text-3xl">{category.attributes.name}</div>
                 <div className="prose prose-sm prose-slate w-full">
                   <MDXContent text={category.attributes.description} />
