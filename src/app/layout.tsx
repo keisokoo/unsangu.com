@@ -36,6 +36,19 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+          {/* Start Naver Analytics */}
+      <Script src="//wcs.naver.net/wcslog.js"/>
+      <Script id="naver-analytics" type="text/javascript">{
+        `
+      if(!wcs_add) var wcs_add = {};
+      wcs_add["wa"] = "30a71d2c2fc570";
+      if(window.wcs) {
+        wcs_do();
+      }
+        `
+      }
+      </Script>
+          {/* End Naver Analytics */}
           {/* Start Google Tag Manager */}
           <Script id="google-tag" strategy="afterInteractive">{`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
       new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
