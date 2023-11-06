@@ -4,7 +4,7 @@ import Pre from "@/components/forMarkdown/Pre";
 import Markdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
-import CodeBlock from "../forMarkdown/CodeBlock";
+import CodeClientBlock from "../forMarkdown/CodeClientBlock";
 interface Props {
   text: string;
 }
@@ -29,7 +29,7 @@ max-w-full md:prose-base lg:prose-lg`}
         components={{
           img: Photo,
           pre: Pre,
-          code: CodeBlock,
+          code: CodeClientBlock,
           a: Anchor,
         }}
       >

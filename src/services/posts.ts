@@ -18,10 +18,11 @@ const getCategoryFilter = (filterTitle: string, category?: number | string | nul
 export async function getPostByID(id: number, category?: number | string | null, filterTitle: string = 'categories') {
   try {
     const categoryFilter = getCategoryFilter(filterTitle, category)
+    const currentPost = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts/${id}?populate=*${categoryFilter}`, fetchOptions)
+    if(!currentPost.ok) return null
     const prevQuery = `/posts/?filters[$and][0][id][$gt]=${id}&pagination[pageSize]=1&sort[0]=id:asc${categoryFilter}`
     const nextQuery = `/posts/?filters[$and][0][id][$lt]=${id}&pagination[pageSize]=1&sort[0]=id:desc${categoryFilter}`
     const prevPost = await fetch(process.env.NEXT_PUBLIC_API_URL + prevQuery, fetchOptions)
-    const currentPost = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts/${id}?populate=*${categoryFilter}`, fetchOptions)
     const nextPost = await fetch(process.env.NEXT_PUBLIC_API_URL + nextQuery, fetchOptions)
 
     const prevPostJSON = (await prevPost.json() as ServiceCollectionResponse<PostType>).data?.[0]

@@ -9,6 +9,7 @@ import Link from "next/link";
 import ContentBody from "./ContentBody";
 import GroupBox from "./GroupBox";
 import RandomPosts from "./RandomPosts";
+import { notFound } from "next/navigation";
 
 interface Props extends TargetProps {
   postId: number;
@@ -21,7 +22,7 @@ export default function ContentsDetails({
   target,
   ...props
 }: Props) {
-  const [{ data: item }, { data: randomPost }] = useQueries({
+  const [{ data: item, isError }, { data: randomPost }] = useQueries({
     queries: [
       {
         queryKey: ["hydrate-post-by", postId, slug, target],
@@ -44,6 +45,8 @@ export default function ContentsDetails({
   const pageUrl = target && slug ? `/posts/${target}/${slug}` : `/posts`;
   const prevHref = item?.prevPost?.id ? `${pageUrl}/${item.prevPost.id}` : null;
   const nextHref = item?.nextPost?.id ? `${pageUrl}/${item.nextPost.id}` : null;
+  if(!item?.currentPost) return notFound();
+  if(isError) return notFound()
   return (
     <>
       {target === "groups" && <GroupBox {...props} />}

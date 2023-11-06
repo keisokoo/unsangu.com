@@ -5,6 +5,7 @@ import { getPages, getPagination } from "@/utils/pagination";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "./Pagination";
 import PostListItem from "./PostListItem";
+import { notFound } from "next/navigation";
 
 export default function PostsByTarget({
   params,
@@ -18,7 +19,7 @@ export default function PostsByTarget({
     queryKey: ["hydrate-posts-with", currentPage, slug, target],
     queryFn: () => getPosts(currentPage, slug, target),
   });
-  if (!response) return <div></div>;
+  if (!response) return notFound();
   const { meta, data } = response;
   const { pagination } = meta;
   const pages = getPages(pagination.total ?? 0, pagination.pageSize ?? 1);

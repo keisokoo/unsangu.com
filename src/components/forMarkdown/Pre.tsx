@@ -1,4 +1,4 @@
-import { getIcon } from "@/utils/syntax";
+import { getCurrentLanguage, getIcon, replaceClassName } from "@/utils/syntax";
 import { ClassAttributes, HTMLAttributes, ReactElement } from "react";
 import { BiClipboard } from "react-icons/bi";
 import { ExtraProps } from "react-markdown";
@@ -8,10 +8,8 @@ export default function Pre(
     HTMLAttributes<HTMLPreElement> &
     ExtraProps,
 ) {
-  const language = (props?.children as ReactElement)?.props?.className?.replace(
-    "language-",
-    "",
-  );
+  const parsed = replaceClassName((props?.children as ReactElement)?.props?.className)
+  const language = getCurrentLanguage(parsed.language);
   const Icon = getIcon(language!);
   if (!language) return <pre {...props} />;
   return (
@@ -19,7 +17,7 @@ export default function Pre(
       <div className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center gap-4 text-gray-400">
           <span className="text-lg">{Icon}</span>
-          <span className="text-xs">{language}</span>
+          <span className="text-xs">{parsed.language}</span>
         </div>
         <button
           data-clipboard=""
