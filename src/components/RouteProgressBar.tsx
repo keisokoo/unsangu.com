@@ -33,6 +33,7 @@ export default function RouteProgressBar() {
           null;
       if (!target) return;
       if (target.href === window.location.href) return;
+      if (target.target === "_blank") return;
       handleStart();
     };
     const scrollPercentEvent = () => {
