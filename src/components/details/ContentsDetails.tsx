@@ -45,8 +45,8 @@ export default function ContentsDetails({
   const pageUrl = target && slug ? `/posts/${target}/${slug}` : `/posts`;
   const prevHref = item?.prevPost?.id ? `${pageUrl}/${item.prevPost.id}` : null;
   const nextHref = item?.nextPost?.id ? `${pageUrl}/${item.nextPost.id}` : null;
-  if(!item?.currentPost) return notFound();
-  if(isError) return notFound()
+  if (!item?.currentPost) return notFound();
+  if (isError) return notFound();
   return (
     <>
       {target === "groups" && <GroupBox {...props} />}

@@ -17,12 +17,12 @@ export default async function Home() {
     queryFn: getProfile,
   });
   await queryClient.prefetchQuery({
-    queryKey: ["hydrate-recent-series-list"],
-    queryFn: getRecentSeriesList,
-  });
-  await queryClient.prefetchQuery({
     queryKey: ["hydrate-category-list"],
     queryFn: getCategoryList,
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ["hydrate-recent-series-list"],
+    queryFn: getRecentSeriesList,
   });
   await queryClient.prefetchQuery({
     queryKey: ["hydrate-recent-posts"],
@@ -30,15 +30,15 @@ export default async function Home() {
   });
   const dehydratedState = dehydrate(queryClient);
   return (
-    <main className={"page-default pb-40"}>
-      <HydrationBoundary state={dehydratedState}>
+    <HydrationBoundary state={dehydratedState}>
+      <main className={"page-default pb-40"}>
         <Profile />
         <div className="flex flex-col gap-20">
           <RecentSeriesList />
           <CategoryList />
           <RecentPosts />
         </div>
-      </HydrationBoundary>
-    </main>
+      </main>
+    </HydrationBoundary>
   );
 }

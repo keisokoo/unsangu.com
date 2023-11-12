@@ -7,7 +7,7 @@ export default async function WorksPage() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["hydrate-work-category"],
-    queryFn: getWorksWithWorkCategory,
+    queryFn: () => getWorksWithWorkCategory(),
   });
   const dehydratedState = dehydrate(queryClient);
   return (

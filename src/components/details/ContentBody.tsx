@@ -75,9 +75,7 @@ export default function ContentBody({ currentPost }: Props) {
                     <div
                       className={clsx("mt-4 border-t border-slate-300 py-8")}
                     >
-                      <div className="prose prose-sm prose-slate w-full max-w-full md:prose-base lg:prose-lg">
-                        <MDXContent text={content.details} />
-                      </div>
+                      <MDXContent text={content.details} />
                     </div>
                   </div>
                 );

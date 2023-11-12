@@ -4,9 +4,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  experimental: {
-    webpackBuildWorker: true,
-  },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {
     remotePatterns: [
@@ -31,4 +28,6 @@ const nextConfig = {
   reactStrictMode: false,
 };
 
-module.exports = withBundleAnalyzer(nextConfig);
+module.exports = process.env.ANALYZE === "true" ? withBundleAnalyzer({...nextConfig, experimental: {
+  webpackBuildWorker: true,
+}}): nextConfig;

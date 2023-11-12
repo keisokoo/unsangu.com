@@ -1,9 +1,28 @@
 "use client";
 import { getPostSeries } from "@/services/posts";
-import { TargetProps } from "@/services/types";
+import {
+  GroupType,
+  PostType,
+  ServiceDataType,
+  TargetProps,
+} from "@/services/types";
 import { useQuery } from "@tanstack/react-query";
 import GroupListHeader from "./GroupListHeader";
 import PostListItem from "./PostListItem";
+
+const groupSort = (
+  a: ServiceDataType<PostType>,
+  b: ServiceDataType<PostType>,
+  type: GroupType,
+) => {
+  const aDate =
+    type === "numbering" ? a.attributes.createdAt : a.attributes.updatedAt;
+  const bDate =
+    type === "numbering" ? b.attributes.createdAt : b.attributes.updatedAt;
+  const aData = new Date(aDate).getTime();
+  const bData = new Date(bDate).getTime();
+  return type === "numbering" ? aData - bData : bData - aData;
+};
 
 export default function PostsBySeries(props: TargetProps) {
   const { data: res } = useQuery({
@@ -25,16 +44,18 @@ export default function PostsBySeries(props: TargetProps) {
         <GroupListHeader groupData={res.data.attributes} />
       </div>
       <div className="flex w-full flex-col gap-0 pb-40 lg:flex-row lg:flex-wrap">
-        {posts.data.map((post, idx) => {
-          return (
-            <PostListItem
-              key={post.id}
-              post={post}
-              idx={idx}
-              pageUrl={pageUrl}
-            />
-          );
-        })}
+        {posts.data
+          .sort((a, b) => groupSort(a, b, res.data.attributes.type))
+          .map((post, idx) => {
+            return (
+              <PostListItem
+                key={post.id}
+                post={post}
+                idx={idx}
+                pageUrl={pageUrl}
+              />
+            );
+          })}
       </div>
     </>
   );

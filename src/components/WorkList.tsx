@@ -8,46 +8,36 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import WorkItem from "./WorkItem";
 import MDXContent from "./details/MDXContent";
+import dayjs from "dayjs";
 
 export default function WorkList({}) {
   const [workType, set_workType] = useState<WorkType | null>(null);
-  const { data, isError, isPending } = useQuery({
-    queryKey: ["get-works-by-type", workType],
-    queryFn: () => getWorksByType(workType),
-    enabled: workType !== null,
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["get-works-by-type", workType],
+  //   queryFn: () => getWorksByType(workType),
+  //   enabled: workType !== null,
+  // });
   const { data: workCategory } = useQuery({
-    queryKey: ["hydrate-work-category"],
-    queryFn: getWorksWithWorkCategory,
-    enabled: workType === null,
+    queryKey: ["hydrate-work-category", workType],
+    queryFn: () => getWorksWithWorkCategory(workType),
   });
   useEffect(() => {
     console.log("workCategory", workCategory);
   }, [workCategory]);
   return (
     <div className="page-default pb-40">
-      <div className="p-8">
-        <button
-          onClick={async () => {
-            const currentHost = await getHost();
-            console.log("currentHost", currentHost);
-          }}
-        >
-          getHost
-        </button>
-      </div>
-      <div className="flex flex-wrap gap-4">
+      <div className="ml-3 mt-8 flex flex-wrap gap-1">
         <div
           className={clsx(
             {
-              "bg-stone-200": workType !== null,
-              "bg-yellow-200": workType == null,
+              "border-transparent bg-stone-200": workType !== null,
+              "active-tab border-slate-400 bg-yellow-200": workType === null,
             },
-            "cursor-pointer whitespace-nowrap rounded-md px-2 py-0.5 transition-all hover:opacity-60",
+            "current-tab",
           )}
           onClick={() => set_workType(null)}
         >
-          {"전체"}
+          {`전체`}
         </div>
         {workTypes.map((type) => {
           return (
@@ -55,12 +45,11 @@ export default function WorkList({}) {
               key={type}
               className={clsx(
                 {
-                  "bg-purple-200": "personal" === type && workType === type,
-                  "bg-green-200": "outsourcing" === type && workType === type,
-                  "bg-blue-200": "company" === type && workType === type,
-                  "bg-stone-200": workType !== type,
+                  "active-tab border-slate-400 bg-yellow-200":
+                    workType === type,
+                  "border-transparent bg-stone-200": workType !== type,
                 },
-                "cursor-pointer whitespace-nowrap rounded-md px-2 py-0.5 transition-all hover:opacity-60",
+                "current-tab",
               )}
               onClick={() => set_workType(type)}
             >
@@ -69,32 +58,52 @@ export default function WorkList({}) {
           );
         })}
       </div>
-      <div className="flex flex-col gap-80" id="content">
-        {workType === null &&
-          workCategory?.data &&
+      <div
+        className="flex min-h-screen flex-col rounded-md border border-slate-400"
+        id="content"
+      >
+        {workCategory?.data &&
           workCategory.data.length > 0 &&
           workCategory.data.map((category) => {
             return (
-              <div key={category.id} className="border py-8 px-4 rounded-2xl border-slate-600">
+              <div key={category.id} className="rounded-md bg-white px-4 py-8">
                 <div className="text-3xl">{category.attributes.name}</div>
-                <div className="prose prose-sm prose-slate w-full">
-                  <MDXContent text={category.attributes.description} />
-                </div>
-                <div className="flex flex-col gap-40">
-                  {category?.attributes.works?.data?.map((work) => {
-                    return <WorkItem key={work.id} work={work} />;
-                  })}
+                <MDXContent text={category.attributes.description} />
+                <div className="flex flex-col">
+                  {category?.attributes.works?.data
+                    ?.sort(
+                      (a, b) =>
+                        dayjs(b.attributes.start).valueOf() -
+                        dayjs(a.attributes.start).valueOf(),
+                    )
+                    .map((work, idx) => {
+                      return (
+                        <div
+                          key={work.id}
+                          className={clsx(
+                            {
+                              "mt-8": idx === 0,
+                            },
+                            "border-t border-slate-300 pb-40 pt-4",
+                          )}
+                        >
+                          <WorkItem work={work} />
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             );
           })}
-        {workType !== null && data?.data && data.data.length > 0 && (
-          <div className="flex flex-col gap-40">
-            {data.data.map((work) => {
-              return <WorkItem key={work.id} work={work} />;
-            })}
+        {/* {workType !== null && data?.data && data.data.length > 0 && (
+          <div className="rounded-md bg-white px-4  py-8">
+            <div className="flex flex-col gap-40">
+              {data.data.map((work) => {
+                return <WorkItem key={work.id} work={work} />;
+              })}
+            </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -6,10 +6,11 @@ import MDXContent from "./details/MDXContent";
 interface WorkItemProps {
   work: ServiceDataType<Works>;
 }
+const hide = true;
 export default function WorkItem({ work }: WorkItemProps) {
   return (
-    <div className="flex flex-col gap-0 rounded-2xl bg-gray-100 px-4 py-10">
-      <div className="sticky top-[60px] z-10 flex items-center gap-4 bg-gray-100 py-2">
+    <div className="flex flex-col gap-0 rounded-2xl px-4">
+      <div className="sticky top-[60px] z-10 flex items-center gap-4 bg-white py-2">
         {work.attributes.type && (
           <div
             className={clsx(
@@ -43,13 +44,8 @@ export default function WorkItem({ work }: WorkItemProps) {
               : work.attributes.end_replace}
           </div>
         </div>
-        <div
-          className="prose prose-sm prose-slate w-full 
-max-w-full md:prose-base lg:prose-lg"
-        >
-          <MDXContent text={work.attributes.contents} />
-        </div>
-        <div className="flex flex-wrap gap-4 rounded-xl bg-white p-4">
+        <MDXContent text={work.attributes.contents} />
+        <div className="flex flex-wrap gap-4 rounded-xl py-4">
           {work.attributes.stack?.map((stack, idx) => {
             return (
               <div
@@ -61,30 +57,34 @@ max-w-full md:prose-base lg:prose-lg"
             );
           })}
         </div>
-        <div className="whitespace-pre-line text-sm leading-loose text-gray-600">
-          {work.attributes.work_summary}
-        </div>
-        <div className="flex flex-col gap-2 text-sm">
-          {work.attributes.links?.map((link, idx) => {
-            return (
-              <div key={link.id + work.id + idx}>
-                <a
-                  href={link.url}
-                  className="flex items-center gap-2"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <span className="rounded-md bg-blue-100 px-2 py-1">
-                    {link.text}
-                  </span>
-                  <span className="underline underline-offset-2">
-                    {link.url}
-                  </span>
-                </a>
-              </div>
-            );
-          })}
-        </div>
+        {!hide && (
+          <>
+            <div className="whitespace-pre-line text-sm leading-loose text-gray-600">
+              {work.attributes.work_summary}
+            </div>
+            <div className="flex flex-col gap-2 text-sm">
+              {work.attributes.links?.map((link, idx) => {
+                return (
+                  <div key={link.id + work.id + idx}>
+                    <a
+                      href={link.url}
+                      className="flex items-center gap-2"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <span className="rounded-md bg-blue-100 px-2 py-1">
+                        {link.text}
+                      </span>
+                      <span className="underline underline-offset-2">
+                        {link.url}
+                      </span>
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

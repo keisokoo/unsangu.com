@@ -161,11 +161,13 @@ export type RandomPostType = {
   publishedAt: string
   slug: string | null
 }
+export type GroupType = 'numbering' | 'recent'
 export type GroupListResponse = {
   title: string
   description: string
   updatedAt: string
   thumbnail: ThumbnailDataType
+  type: GroupType
   posts: {
     data: {
       attributes: {
@@ -179,6 +181,7 @@ export type GroupResponse = {
   description: string
   thumbnail: ThumbnailDataType
   updatedAt: string
+  type: GroupType
   posts: {
     data: ServiceDataType<PostType>[]
   }

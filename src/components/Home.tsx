@@ -16,19 +16,19 @@ export default function Home() {
     queries: [
       {
         queryKey: ["hydrate-profile"],
-        queryFn: () => getProfile(),
+        queryFn: getProfile,
       },
       {
         queryKey: ["hydrate-category-list"],
-        queryFn: () => getCategoryList(),
+        queryFn: getCategoryList,
       },
       {
         queryKey: ["hydrate-recent-series-list"],
-        queryFn: () => getRecentSeriesList(),
+        queryFn: getRecentSeriesList,
       },
       {
         queryKey: ["hydrate-recent-posts"],
-        queryFn: () => getRecentPosts(),
+        queryFn: getRecentPosts,
       },
     ],
   });
@@ -38,15 +38,13 @@ export default function Home() {
     { data: groups },
     { data: posts },
   ] = queries;
-
   const profileData = profile?.data.attributes;
-
   const photo = profileData?.photo?.data?.attributes;
   if (!profileData) return <div>404</div>;
-  if (!photo) return <div>404</div>;
   return (
     <main className={"page-default pb-40"}>
       <div className="flex flex-1 flex-col items-center justify-center gap-4 py-16">
+        {photo && (
         <div className="w-[100px]">
           <Image
             src={photo.url ? getFromServer(photo.url) : "/og.png"}
@@ -56,6 +54,7 @@ export default function Home() {
             className="aspect-square rounded-full object-cover"
           />
         </div>
+        )}
         <div className="flex flex-1 flex-col items-center justify-center gap-1">
           <div className="text-2xl font-bold">{profileData.name}</div>
           <p className="text-sm">{profileData.specialty}</p>

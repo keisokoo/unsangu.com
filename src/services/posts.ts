@@ -15,11 +15,11 @@ const pageSize = 12
 
 const imagePopulate = (target: string) => `&populate[${target}][fields][0]=url&populate[${target}][fields][1]=width&populate[${target}][fields][2]=height&populate[${target}][fields][3]=hash`
 const getCategoryFilter = (filterTitle: string, category?: number | string | null) => category ? `&filters[${filterTitle}][${typeof category === 'number' ? 'id' : checkHasString(category) ? 'slug' : 'id'}]=${category}` : ''
-export async function getPostByID(id: number, category?: number | string | null, filterTitle: string = 'categories') {
+export async function getPostByID(id: number | string, category?: number | string | null, filterTitle: string = 'categories') {
   try {
     const categoryFilter = getCategoryFilter(filterTitle, category)
     const currentPost = await fetch(process.env.NEXT_PUBLIC_API_URL + `/posts/${id}?populate=*${categoryFilter}`, fetchOptions)
-    if(!currentPost.ok) return null
+    if (!currentPost.ok) return null
     const prevQuery = `/posts/?filters[$and][0][id][$gt]=${id}&pagination[pageSize]=1&sort[0]=id:asc${categoryFilter}`
     const nextQuery = `/posts/?filters[$and][0][id][$lt]=${id}&pagination[pageSize]=1&sort[0]=id:desc${categoryFilter}`
     const prevPost = await fetch(process.env.NEXT_PUBLIC_API_URL + prevQuery, fetchOptions)
@@ -225,9 +225,9 @@ export async function getWorksByType(type: WorkType | null) {
     console.error(error)
   }
 }
-export async function getWorksWithWorkCategory() {
+export async function getWorksWithWorkCategory(type?: WorkType | null) {
   try {
-    const query = process.env.NEXT_PUBLIC_API_URL + `/work-categories?populate[works][populate][links]=true&populate[works][populate][thumbnails]=true&sort[0]=start:desc&pagination[pageSize]=999`
+    const query = process.env.NEXT_PUBLIC_API_URL + `/work-categories?populate[works][populate][links]=true${type ? `&filters[type]=${type}` : ''}&populate[works][populate][thumbnails]=true&sort[0]=order:desc&pagination[pageSize]=999`
     const response = await fetch(query, {
       cache: 'no-cache',
     })

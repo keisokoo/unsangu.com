@@ -12,6 +12,12 @@
 :root {
   --page-width: 860px;
 }
+
+a,
+button,
+input {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
 .some {
   color: theme(colors.green.600);
   font-size: theme(fontSize.xs);
@@ -34,6 +40,59 @@
     max-width: var(--page-width);
     @apply mx-auto my-0 w-full bg-slate-50 px-4 2xl:px-0;
   }
+}
+@layer components {
+  .current-tab {
+    position: relative;
+    top: 1px;
+    min-width: 100px;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+    @apply cursor-pointer whitespace-nowrap border-x border-t px-2 py-0.5 hover:bg-slate-300;
+  }
+  @media screen and (max-width: 540px) {
+    .current-tab {
+      min-width: auto;
+    }
+  }
+  .current-tab:not(.active-tab) {
+    color: theme(colors.slate.500);
+    border-bottom: 1px solid theme(colors.slate.400);
+  }
+}
+.current-tab.active-tab {
+  position: relative;
+  background-color: #ffffff; /* 탭의 배경색 */
+}
+
+/* 활성화된 탭 아래 부분의 반투명 효과를 줄 '가짜' 요소 */
+.current-tab.active-tab::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  background-color: transparent;
+  left: -10px;
+  bottom: 0px;
+  height: 16px;
+  width: 10px;
+  border-bottom-right-radius: 4px;
+  border-bottom: 1px solid theme(colors.slate.400);
+  border-right: 1px solid theme(colors.slate.400);
+  box-shadow: 4px 2px 0 2px #fff;
+}
+.current-tab.active-tab::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  background-color: transparent;
+  right: -16px;
+  bottom: 0px;
+  height: 16px;
+  width: 16px;
+  border-bottom-left-radius: 10px;
+  border-bottom: 1px solid theme(colors.slate.400);
+  border-left: 1px solid theme(colors.slate.400);
+  box-shadow: -7px 2px 0 1px #fff;
 }
 .progress-bar {
   position: sticky;
@@ -165,12 +224,6 @@ body[open-menu] #menu {
   top: 57px;
   height: calc(100vh - 57px);
   position: absolute;
-}
-
-a,
-button,
-input {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 #category-list {
   transition: transform 0.3s;
